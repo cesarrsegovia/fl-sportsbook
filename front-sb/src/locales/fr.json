@@ -1,0 +1,409 @@
+{
+    "appName": {
+        "message": "Extension Gamblor"
+    },
+    "appDesc": {
+        "message": "Interagir avec les publications Gamblor"
+    },
+    "welcomeBack": {
+        "message": "Bon retour"
+    },
+    "openSidePanelTitle": {
+        "message": "Ouvrir le panneau latéral"
+    },
+    "totalBalance": {
+        "message": "Solde Total"
+    },
+    "trendToday": {
+        "message": "+2.4% aujourd'hui"
+    },
+    "btnDeposit": {
+        "message": "Dépôt"
+    },
+    "btnWithdraw": {
+        "message": "Retrait"
+    },
+    "navHome": {
+        "message": "Accueil"
+    },
+    "navGames": {
+        "message": "Jeux"
+    },
+    "navRewards": {
+        "message": "Récompenses"
+    },
+    "navProfile": {
+        "message": "Profil"
+    },
+    "navSportsbook": {
+        "message": "Paris Sportifs"
+    },
+    "helpTitle": {
+        "message": "Aide & Support"
+    },
+    "helpSubtitle": {
+        "message": "Comment pouvons-nous aider ?"
+    },
+    "helpInstruction": {
+        "message": "Choisissez une option ci-dessous."
+    },
+    "helpLiveChat": {
+        "message": "Chat en direct"
+    },
+    "helpWaitTime": {
+        "message": "~2 min d'attente"
+    },
+    "helpEmail": {
+        "message": "Email"
+    },
+    "helpResponseTime": {
+        "message": "Réponse sous 24h"
+    },
+    "helpCommonTopics": {
+        "message": "Sujets Courants"
+    },
+    "topicDeposits": {
+        "message": "Dépôts & Retraits"
+    },
+    "topicDepositsDesc": {
+        "message": "Méthodes, limites et délais"
+    },
+    "topicKYC": {
+        "message": "Vérification (KYC)"
+    },
+    "topicKYCDesc": {
+        "message": "Documents d'identité et statut"
+    },
+    "topicRules": {
+        "message": "Règles de Paris"
+    },
+    "topicRulesDesc": {
+        "message": "Paris annulés, prolongations"
+    },
+    "topicPromo": {
+        "message": "Promotions & Bonus"
+    },
+    "topicPromoDesc": {
+        "message": "Conditions de mise et réclamation"
+    },
+    "helpSupportOnline": {
+        "message": "Support en ligne 24/7"
+    },
+    "gamesCasinoTitle": {
+        "message": "Casino"
+    },
+    "gamesSearchPlaceholder": {
+        "message": "Rechercher un jeu..."
+    },
+    "gamesContinue": {
+        "message": "Continuer à jouer"
+    },
+    "gamesViewAll": {
+        "message": "Voir tout"
+    },
+    "gamesTrending": {
+        "message": "Tendances"
+    },
+    "profileTitle": {
+        "message": "Profil"
+    },
+    "profileConnected": {
+        "message": "Connecté"
+    },
+    "profileTotalBalance": {
+        "message": "Solde Total"
+    },
+    "profileAvailable": {
+        "message": "Disponible"
+    },
+    "profilePending": {
+        "message": "En attente"
+    },
+    "statsTotalBets": {
+        "message": "Total Paris"
+    },
+    "statsOpenWagers": {
+        "message": "Paris Ouverts"
+    },
+    "statsLastActivity": {
+        "message": "Dernière Activité"
+    },
+    "menuAccount": {
+        "message": "Compte"
+    },
+    "menuTransHistory": {
+        "message": "Historique des Transactions"
+    },
+    "menuBetHistory": {
+        "message": "Historique des Paris"
+    },
+    "menuBonuses": {
+        "message": "Bonus"
+    },
+    "badgeNew": {
+        "message": "NOUVEAU"
+    },
+    "menuReferrals": {
+        "message": "Parrainages"
+    },
+    "menuResponsible": {
+        "message": "Jeu Responsable"
+    },
+    "menuLogout": {
+        "message": "Déconnexion"
+    },
+    "secSessionSecure": {
+        "message": "Session Sécurisée"
+    },
+    "depTitle": {
+        "message": "Déposer des Fonds"
+    },
+    "depSelectNetwork": {
+        "message": "Sélectionner le Réseau"
+    },
+    "depWalletAddress": {
+        "message": "Adresse du Portefeuille"
+    },
+    "depMinDeposit": {
+        "message": "Dépôt Minimum 0.01 ETH"
+    },
+    "depWarning": {
+        "message": "L'envoi d'autres actifs peut entraîner une perte permanente."
+    },
+    "depClaimBonus": {
+        "message": "Réclamer Bonus"
+    },
+    "depNoBonus": {
+        "message": "Aucun bonus actif"
+    },
+    "depBuyCrypto": {
+        "message": "Acheter Crypto"
+    },
+    "depViaMoonPay": {
+        "message": "via MoonPay"
+    },
+    "depSubmitBtn": {
+        "message": "Déposer des Fonds"
+    },
+    "depScanQr": {
+        "message": "Scanner QR"
+    },
+    "wdTitle": {
+        "message": "Retirer des Fonds"
+    },
+    "wdAvailable": {
+        "message": "Disponible pour Retrait"
+    },
+    "wdAmount": {
+        "message": "Montant du Retrait"
+    },
+    "wdRecipient": {
+        "message": "Adresse du Destinataire"
+    },
+    "wdPastePlaceholder": {
+        "message": "Coller l'adresse"
+    },
+    "wdNetworkFee": {
+        "message": "Frais de Réseau"
+    },
+    "wdTotalDeduction": {
+        "message": "Déduction Totale"
+    },
+    "wdConfirmBtn": {
+        "message": "Confirmer le Retrait"
+    },
+    "wdWarning": {
+        "message": "Je confirme que l'adresse saisie correspond au réseau sélectionné. Les transactions sur la blockchain ne peuvent pas être annulées."
+    },
+    "filterAll": {
+        "message": "Tous"
+    },
+    "filterDeposits": {
+        "message": "Dépôts"
+    },
+    "filterWithdrawals": {
+        "message": "Retraits"
+    },
+    "filterBets": {
+        "message": "Paris"
+    },
+    "histPending": {
+        "message": "En attente"
+    },
+    "histProcessing": {
+        "message": "Traitement..."
+    },
+    "histToday": {
+        "message": "Aujourd'hui"
+    },
+    "histYesterday": {
+        "message": "Hier"
+    },
+    "histWinPrefix": {
+        "message": "Gagné :"
+    },
+    "histBetPrefix": {
+        "message": "Pari :"
+    },
+    "histWithdrawal": {
+        "message": "Retrait"
+    },
+    "histDeposit": {
+        "message": "Dépôt"
+    },
+    "histToPrefix": {
+        "message": "À :"
+    },
+    "histFromPrefix": {
+        "message": "De :"
+    },
+    "histEndMsg": {
+        "message": "Fin de l'historique"
+    },
+    "plPlaceBetTitle": {
+        "message": "Placer un Pari"
+    },
+    "plLive": {
+        "message": "En Direct"
+    },
+    "plMatchWinner": {
+        "message": "Vainqueur du Match"
+    },
+    "plSelection": {
+        "message": "Sélection"
+    },
+    "plOdds": {
+        "message": "Cotes"
+    },
+    "plStakeAmount": {
+        "message": "Mise"
+    },
+    "plEstReturn": {
+        "message": "Retour Estimé"
+    },
+    "plWalletBalance": {
+        "message": "Solde Actuel"
+    },
+    "plRemaining": {
+        "message": "Restant après pari"
+    },
+    "plConfirmCheck": {
+        "message": "Je confirme que ce pari est correct et je comprends que les paris ne peuvent pas être annulés."
+    },
+    "plPlaceBetBtn": {
+        "message": "Placer un Pari"
+    },
+    "matchPossession": {
+        "message": "Possession"
+    },
+    "tweetOddsLabel": {
+        "message": "Cotes :"
+    },
+    "tweetLiveLabel": {
+        "message": "EN DIRECT"
+    },
+    "tweetPlaceBetBtn": {
+        "message": "Parier"
+    },
+    "btnPopular": {
+        "message": "Populaire"
+    },
+    "btnGoals": {
+        "message": "Buts"
+    },
+    "btnCorners": {
+        "message": "Corners"
+    },
+    "btnCards": {
+        "message": "Cartons"
+    },
+    "plSelectionAdded": {
+        "message": "Sélection ajoutée"
+    },
+    "sucTitle": {
+        "message": "Pari Placé !"
+    },
+    "sucStake": {
+        "message": "Mise"
+    },
+    "sucPotentialReturn": {
+        "message": "Retour Potentiel"
+    },
+    "sucID": {
+        "message": "ID"
+    },
+    "sucDone": {
+        "message": "Terminé"
+    },
+    "sucMyBets": {
+        "message": "Mes Paris"
+    },
+    "filterOpen": {
+        "message": "Ouverts"
+    },
+    "filterWon": {
+        "message": "Gagnés"
+    },
+    "filterLost": {
+        "message": "Perdus"
+    },
+    "badgeWon": {
+        "message": "GAGNÉ"
+    },
+    "badgeLost": {
+        "message": "PERDU"
+    },
+    "badgeOpen": {
+        "message": "OUVERT"
+    },
+    "sbLiveNow": {
+        "message": "En Direct"
+    },
+    "sbNoLive": {
+        "message": "Aucun match en direct."
+    },
+    "sbUpcoming": {
+        "message": "Matchs à Venir"
+    },
+    "sbLoading": {
+        "message": "Chargement des matchs..."
+    },
+    "sbRecent": {
+        "message": "Résultats Récents"
+    },
+    "sbTabBoard": { "message": "Tableau" },
+    "sbTabResults": { "message": "Résultats" },
+    "sbTabStandings": { "message": "Classement" },
+    "sbMainBoard": { "message": "Tableau Principal" },
+    "sbRecentResults": { "message": "Résultats Récents" },
+    "sbPartidos": { "message": "matchs" },
+    "sbNoMatches": { "message": "Aucun match prévu." },
+    "sbNoResults": { "message": "Aucun résultat enregistré." },
+    "sbEquipo": { "message": "Équipe" },
+    "sbPJ": { "message": "MJ" },
+    "sbG": { "message": "G" },
+    "sbE": { "message": "N" },
+    "sbP": { "message": "P" },
+    "sbGF": { "message": "BP" },
+    "sbGC": { "message": "BC" },
+    "sbDG": { "message": "Diff" },
+    "sbPTS": { "message": "PTS" },
+    "sbHoy": { "message": "Aujourd'hui" },
+    "sbManana": { "message": "Demain" },
+    "sbVisita": { "message": "Extérieur" },
+    "sbEmpate": { "message": "Nul" },
+    "sbLocal": { "message": "Domicile" },
+    "homeRecentActivity": { "message": "Activité Récente" },
+    "homeNoActivity": { "message": "Aucune activité récente ces dernières 24h." },
+    "gamesSocialCasino": { "message": "Casino Social" },
+    "menuSettings": { "message": "Paramètres" },
+    "sbNoStandings": { "message": "Aucun classement disponible pour cette ligue pour le moment." },
+    "tweetRealTime": { "message": "TEMPS RÉEL" },
+    "sbUnknownDate": { "message": "Date inconnue" },
+    "sbEnVivo": { "message": "EN DIRECT" },
+    "sbFinalizado": { "message": "TERMINÉ" },
+    "sbProgramado": { "message": "PROGRAMMÉ" },
+    "sbStatsPeriod": { "message": "Stats par période" },
+    "sbIndividualLeaders": { "message": "Leaders individuels" },
+    "sbResultOdds": { "message": "Cotes de résultat" }
+}

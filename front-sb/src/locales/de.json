@@ -1,0 +1,409 @@
+{
+    "appName": {
+        "message": "Gamblor Erweiterung"
+    },
+    "appDesc": {
+        "message": "Interagieren Sie mit Gamblor-Beiträgen"
+    },
+    "welcomeBack": {
+        "message": "Willkommen zurück"
+    },
+    "openSidePanelTitle": {
+        "message": "Seitenbereich öffnen"
+    },
+    "totalBalance": {
+        "message": "Gesamtguthaben"
+    },
+    "trendToday": {
+        "message": "+2.4% heute"
+    },
+    "btnDeposit": {
+        "message": "Einzahlen"
+    },
+    "btnWithdraw": {
+        "message": "Abheben"
+    },
+    "navHome": {
+        "message": "Start"
+    },
+    "navGames": {
+        "message": "Spiele"
+    },
+    "navRewards": {
+        "message": "Belohnungen"
+    },
+    "navProfile": {
+        "message": "Profil"
+    },
+    "navSportsbook": {
+        "message": "Sportwetten"
+    },
+    "helpTitle": {
+        "message": "Hilfe & Support"
+    },
+    "helpSubtitle": {
+        "message": "Wie können wir helfen?"
+    },
+    "helpInstruction": {
+        "message": "Wählen Sie eine Option."
+    },
+    "helpLiveChat": {
+        "message": "Live-Chat"
+    },
+    "helpWaitTime": {
+        "message": "~2 Min Wartezeit"
+    },
+    "helpEmail": {
+        "message": "E-Mail senden"
+    },
+    "helpResponseTime": {
+        "message": "Antwort in 24h"
+    },
+    "helpCommonTopics": {
+        "message": "Häufige Themen"
+    },
+    "topicDeposits": {
+        "message": "Ein- & Auszahlungen"
+    },
+    "topicDepositsDesc": {
+        "message": "Methoden, Limits und Zeiten"
+    },
+    "topicKYC": {
+        "message": "Verifizierung (KYC)"
+    },
+    "topicKYCDesc": {
+        "message": "Dokumente und Status"
+    },
+    "topicRules": {
+        "message": "Wettregeln"
+    },
+    "topicRulesDesc": {
+        "message": "Ungültige Wetten, Ergebnisse"
+    },
+    "topicPromo": {
+        "message": "Aktionen & Boni"
+    },
+    "topicPromoDesc": {
+        "message": "Umsatzbedingungen"
+    },
+    "helpSupportOnline": {
+        "message": "Support Online 24/7"
+    },
+    "gamesCasinoTitle": {
+        "message": "Casino"
+    },
+    "gamesSearchPlaceholder": {
+        "message": "Spiel suchen..."
+    },
+    "gamesContinue": {
+        "message": "Weiter spielen"
+    },
+    "gamesViewAll": {
+        "message": "Alle anzeigen"
+    },
+    "gamesTrending": {
+        "message": "Im Trend"
+    },
+    "profileTitle": {
+        "message": "Profil"
+    },
+    "profileConnected": {
+        "message": "Verbunden"
+    },
+    "profileTotalBalance": {
+        "message": "Gesamtguthaben"
+    },
+    "profileAvailable": {
+        "message": "Verfügbar"
+    },
+    "profilePending": {
+        "message": "Ausstehend"
+    },
+    "statsTotalBets": {
+        "message": "Wetten Gesamt"
+    },
+    "statsOpenWagers": {
+        "message": "Offene Wetten"
+    },
+    "statsLastActivity": {
+        "message": "Letzte Aktivität"
+    },
+    "menuAccount": {
+        "message": "Konto"
+    },
+    "menuTransHistory": {
+        "message": "Transaktionsverlauf"
+    },
+    "menuBetHistory": {
+        "message": "Wettverlauf"
+    },
+    "menuBonuses": {
+        "message": "Boni"
+    },
+    "badgeNew": {
+        "message": "NEU"
+    },
+    "menuReferrals": {
+        "message": "Empfehlungen"
+    },
+    "menuResponsible": {
+        "message": "Verantwortungsvolles Spielen"
+    },
+    "menuLogout": {
+        "message": "Abmelden"
+    },
+    "secSessionSecure": {
+        "message": "Sitzung sicher"
+    },
+    "depTitle": {
+        "message": "Guthaben einzahlen"
+    },
+    "depSelectNetwork": {
+        "message": "Netzwerk wählen"
+    },
+    "depWalletAddress": {
+        "message": "Wallet-Adresse"
+    },
+    "depMinDeposit": {
+        "message": "Mindesteinzahlung 0.01 ETH"
+    },
+    "depWarning": {
+        "message": "Senden anderer Assets führt zu Verlust."
+    },
+    "depClaimBonus": {
+        "message": "Bonus beanspruchen"
+    },
+    "depNoBonus": {
+        "message": "Kein aktiver Bonus"
+    },
+    "depBuyCrypto": {
+        "message": "Krypto kaufen"
+    },
+    "depViaMoonPay": {
+        "message": "über MoonPay"
+    },
+    "depSubmitBtn": {
+        "message": "Guthaben einzahlen"
+    },
+    "depScanQr": {
+        "message": "QR scannen"
+    },
+    "wdTitle": {
+        "message": "Guthaben abheben"
+    },
+    "wdAvailable": {
+        "message": "Verfügbar zur Auszahlung"
+    },
+    "wdAmount": {
+        "message": "Auszahlungsbetrag"
+    },
+    "wdRecipient": {
+        "message": "Empfängeradresse"
+    },
+    "wdPastePlaceholder": {
+        "message": "Adresse einfügen"
+    },
+    "wdNetworkFee": {
+        "message": "Netzwerkgebühr"
+    },
+    "wdTotalDeduction": {
+        "message": "Gesamtabzug"
+    },
+    "wdConfirmBtn": {
+        "message": "Auszahlung bestätigen"
+    },
+    "wdWarning": {
+        "message": "Ich bestätige, dass die Adresse zum gewählten Netzwerk passt. Blockchain-Transaktionen sind irreversibel."
+    },
+    "filterAll": {
+        "message": "Alle"
+    },
+    "filterDeposits": {
+        "message": "Einzahlungen"
+    },
+    "filterWithdrawals": {
+        "message": "Auszahlungen"
+    },
+    "filterBets": {
+        "message": "Wetten"
+    },
+    "histPending": {
+        "message": "Ausstehend"
+    },
+    "histProcessing": {
+        "message": "Verarbeitung..."
+    },
+    "histToday": {
+        "message": "Heute"
+    },
+    "histYesterday": {
+        "message": "Gestern"
+    },
+    "histWinPrefix": {
+        "message": "Gewinn:"
+    },
+    "histBetPrefix": {
+        "message": "Wette:"
+    },
+    "histWithdrawal": {
+        "message": "Auszahlung"
+    },
+    "histDeposit": {
+        "message": "Einzahlung"
+    },
+    "histToPrefix": {
+        "message": "An:"
+    },
+    "histFromPrefix": {
+        "message": "Von:"
+    },
+    "histEndMsg": {
+        "message": "Ende des Verlaufs"
+    },
+    "plPlaceBetTitle": {
+        "message": "Wette platzieren"
+    },
+    "plLive": {
+        "message": "Live"
+    },
+    "plMatchWinner": {
+        "message": "Sieger"
+    },
+    "plSelection": {
+        "message": "Auswahl"
+    },
+    "plOdds": {
+        "message": "Quoten"
+    },
+    "plStakeAmount": {
+        "message": "Einsatz"
+    },
+    "plEstReturn": {
+        "message": "Geschätzter Gewinn"
+    },
+    "plWalletBalance": {
+        "message": "Aktuelles Guthaben"
+    },
+    "plRemaining": {
+        "message": "Verbleibend"
+    },
+    "plConfirmCheck": {
+        "message": "Ich bestätige, dass diese Wette korrekt ist und verstehe, dass Wetten nicht storniert werden können."
+    },
+    "plPlaceBetBtn": {
+        "message": "Wette platzieren"
+    },
+    "matchPossession": {
+        "message": "Ballbesitz"
+    },
+    "tweetOddsLabel": {
+        "message": "Quoten:"
+    },
+    "tweetLiveLabel": {
+        "message": "LIVE"
+    },
+    "tweetPlaceBetBtn": {
+        "message": "Wette platzieren"
+    },
+    "btnPopular": {
+        "message": "Beliebt"
+    },
+    "btnGoals": {
+        "message": "Tore"
+    },
+    "btnCorners": {
+        "message": "Ecken"
+    },
+    "btnCards": {
+        "message": "Karten"
+    },
+    "plSelectionAdded": {
+        "message": "Auswahl hinzugefügt"
+    },
+    "sucTitle": {
+        "message": "Wette platziert!"
+    },
+    "sucStake": {
+        "message": "Einsatz"
+    },
+    "sucPotentialReturn": {
+        "message": "Möglicher Gewinn"
+    },
+    "sucID": {
+        "message": "ID"
+    },
+    "sucDone": {
+        "message": "Fertig"
+    },
+    "sucMyBets": {
+        "message": "Meine Wetten"
+    },
+    "filterOpen": {
+        "message": "Offen"
+    },
+    "filterWon": {
+        "message": "Gewonnen"
+    },
+    "filterLost": {
+        "message": "Verloren"
+    },
+    "badgeWon": {
+        "message": "GEWONNEN"
+    },
+    "badgeLost": {
+        "message": "VERLOREN"
+    },
+    "badgeOpen": {
+        "message": "OFFEN"
+    },
+    "sbLiveNow": {
+        "message": "Jetzt Live"
+    },
+    "sbNoLive": {
+        "message": "Keine Live-Matches."
+    },
+    "sbUpcoming": {
+        "message": "Kommende Spiele"
+    },
+    "sbLoading": {
+        "message": "Lade Spiele..."
+    },
+    "sbRecent": {
+        "message": "Aktuelle Ergebnisse"
+    },
+    "sbTabBoard": { "message": "Anzeigetafel" },
+    "sbTabResults": { "message": "Ergebnisse" },
+    "sbTabStandings": { "message": "Tabelle" },
+    "sbMainBoard": { "message": "Hauptanzeigetafel" },
+    "sbRecentResults": { "message": "Aktuelle Ergebnisse" },
+    "sbPartidos": { "message": "Spiele" },
+    "sbNoMatches": { "message": "Keine Spiele geplant." },
+    "sbNoResults": { "message": "Keine Ergebnisse." },
+    "sbEquipo": { "message": "Team" },
+    "sbPJ": { "message": "Sp" },
+    "sbG": { "message": "S" },
+    "sbE": { "message": "U" },
+    "sbP": { "message": "N" },
+    "sbGF": { "message": "T" },
+    "sbGC": { "message": "GT" },
+    "sbDG": { "message": "Tdiff" },
+    "sbPTS": { "message": "PKT" },
+    "sbHoy": { "message": "Heute" },
+    "sbManana": { "message": "Morgen" },
+    "sbVisita": { "message": "Gast" },
+    "sbEmpate": { "message": "Remis" },
+    "sbLocal": { "message": "Heim" },
+    "homeRecentActivity": { "message": "Letzte Aktivitäten" },
+    "homeNoActivity": { "message": "Keine Aktivitäten in den letzten 24 Std." },
+    "gamesSocialCasino": { "message": "Soziales Casino" },
+    "menuSettings": { "message": "Einstellungen" },
+    "sbNoStandings": { "message": "Noch keine Tabellen für diese Liga verfügbar." },
+    "tweetRealTime": { "message": "ECHTZEIT" },
+    "sbUnknownDate": { "message": "Unbekanntes Datum" },
+    "sbEnVivo": { "message": "LIVE" },
+    "sbFinalizado": { "message": "BEENDET" },
+    "sbProgramado": { "message": "GEPLANT" },
+    "sbStatsPeriod": { "message": "Statistiken nach Zeitraum" },
+    "sbIndividualLeaders": { "message": "Einzelne Anführer" },
+    "sbResultOdds": { "message": "Ergebnis-Quoten" }
+}

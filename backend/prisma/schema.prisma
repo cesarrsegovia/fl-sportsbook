@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Match {
+  id             String   @id @default(uuid())
+  externalId     String   @unique
+  sport          String
+  league         String
+  homeTeam       String
+  awayTeam       String
+  homeLogo       String?
+  awayLogo       String?
+  homeScore      Int      @default(0)
+  awayScore      Int      @default(0)
+  status         String
+  startTime      DateTime
+  currentClock   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  awayLinescores Json?
+  homeLinescores Json?
+  leaders        Json?
+  odds           Odds[]
+
+  @@index([sport, league])
+  @@index([status])
+}
+
+model Odds {
+  id           String   @id @default(uuid())
+  matchId      String
+  provider     String
+  homeWin      Float?
+  draw         Float?
+  awayWin      Float?
+  overUnder    Float?
+  overOdds     Float?
+  underOdds    Float?
+  lastUpdateAt DateTime @default(now())
+  match        Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, provider])
+}
+
+model TeamRanking {
+  id           String   @id @default(uuid())
+  league       String
+  conference   String
+  teamName     String
+  teamAbbr     String
+  teamLogo     String?
+  wins         Int
+  losses       Int
+  gamesBehind  Float    @default(0)
+  streak       String?
+  seed         Int
+  pct          Float    @default(0)
+  lastUpdateAt DateTime @default(now())
+  draws        Int      @default(0)
+  goalsAgainst Int      @default(0)
+  goalsFor     Int      @default(0)
+  points       Int      @default(0)
+
+  @@unique([league, teamName])
+}
