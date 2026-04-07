@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useStore } from '../store/useStore';
 import BetSlip from './BetSlip';
@@ -8,9 +9,11 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { selectedSport, setSelectedSport, toggleBetSlip, bets } = useStore();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const sports = [
     { id: 'FIFA World Cup', label: 'FIFA World Cup', icon: 'trophy' },
+    { id: 'Libertadores', label: 'Libertadores', icon: 'emoji_events' },
     { id: 'NBA', label: 'NBA', icon: 'sports_basketball' },
     { id: 'Soccer', label: 'Soccer', icon: 'sports_soccer' },
     { id: 'NHL', label: 'NHL', icon: 'sports_hockey' },
@@ -60,34 +63,48 @@ export default function Layout({ children }: LayoutProps) {
 
       <div className="flex min-h-screen">
         {/* SideNavBar Shell */}
-        <aside className="hidden md:flex h-screen w-64 fixed left-0 top-0 pt-20 bg-[#101417] flex-col gap-2 p-4 font-['Inter'] text-sm font-medium z-40 border-r border-outline-variant/5">
-          <div className="px-2 py-4 mt-2">
-            <h3 className="text-lg font-bold text-[#F8F9FE]">Navigation</h3>
-            <p className="text-xs text-on-surface-variant">Browse Markets</p>
+        <aside className={`hidden md:flex h-screen fixed left-0 top-0 pt-20 bg-[#101417] flex-col gap-2 p-4 font-['Inter'] text-sm font-medium z-40 border-r border-outline-variant/5 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
+          <div className={`flex items-center mt-2 ${isSidebarOpen ? 'justify-between px-2' : 'justify-center'} py-2`}>
+            {isSidebarOpen && (
+              <div>
+                <h3 className="text-lg font-bold text-[#F8F9FE] whitespace-nowrap">Navigation</h3>
+                <p className="text-xs text-on-surface-variant whitespace-nowrap">Browse Markets</p>
+              </div>
+            )}
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+              className="p-2 text-[#F8F9FE]/50 hover:text-[#F8F9FE] transition-colors rounded-full hover:bg-[#1C2024] shrink-0"
+            >
+              <span className="material-symbols-outlined">{isSidebarOpen ? 'menu_open' : 'menu'}</span>
+            </button>
           </div>
-          <nav className="flex flex-col gap-1 overflow-y-auto no-scrollbar">
-            <button className="flex items-center gap-3 p-3 bg-[#1C2024] text-[#85ADFF] rounded-r-lg border-l-4 border-[#85ADFF] transition-all duration-200 ease-in-out">
-              <span className="material-symbols-outlined">home</span> Home
+          <nav className="flex flex-col gap-1 overflow-y-auto no-scrollbar mt-2">
+            <button className={`flex items-center gap-3 p-3 bg-[#1C2024] text-[#85ADFF] transition-all duration-200 ease-in-out ${isSidebarOpen ? 'rounded-r-lg border-l-4 border-[#85ADFF]' : 'rounded-lg justify-center w-full'}`}>
+              <span className="material-symbols-outlined shrink-0 text-xl">home</span> 
+              {isSidebarOpen && <span className="whitespace-nowrap">Home</span>}
             </button>
-            <button onClick={() => setSelectedSport('Live')} className="flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out">
-              <span className="material-symbols-outlined text-error">sensors</span> Live Now
+            <button onClick={() => setSelectedSport('Live')} className={`flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out ${isSidebarOpen ? '' : 'justify-center w-full rounded-lg'}`}>
+              <span className="material-symbols-outlined text-error shrink-0 text-xl">sensors</span> 
+              {isSidebarOpen && <span className="whitespace-nowrap">Live Now</span>}
             </button>
-            <button className="flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out">
-              <span className="material-symbols-outlined">trophy</span> Leagues
+            <button className={`flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out ${isSidebarOpen ? '' : 'justify-center w-full rounded-lg'}`}>
+              <span className="material-symbols-outlined shrink-0 text-xl">trophy</span> 
+              {isSidebarOpen && <span className="whitespace-nowrap">Leagues</span>}
             </button>
-            <button className="flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out">
-              <span className="material-symbols-outlined">history</span> History
+            <button className={`flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out ${isSidebarOpen ? '' : 'justify-center w-full rounded-lg'}`}>
+              <span className="material-symbols-outlined shrink-0 text-xl">history</span> 
+              {isSidebarOpen && <span className="whitespace-nowrap">History</span>}
             </button>
           </nav>
-          <div className="mt-auto p-4">
-            <button className="w-full py-3 bg-primary text-on-primary-fixed font-black rounded-xl hover:shadow-[0_0_15px_rgba(133,173,255,0.4)] transition-all active:scale-95 uppercase tracking-tighter">
-              Deposit Now
+          <div className="mt-auto py-4">
+            <button className={`w-full py-3 bg-primary text-on-primary-fixed font-black hover:shadow-[0_0_15px_rgba(133,173,255,0.4)] transition-all active:scale-95 uppercase tracking-tighter flex justify-center items-center ${isSidebarOpen ? 'rounded-xl' : 'rounded-full aspect-square p-0'}`}>
+              {isSidebarOpen ? 'Deposit Now' : <span className="material-symbols-outlined">payments</span>}
             </button>
           </div>
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-64 lg:mr-80 md:pb-8 border-r border-outline-variant/5">
+        <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-20'} lg:mr-80 md:pb-8 border-r border-outline-variant/5`}>
           {children}
         </main>
 

@@ -41,6 +41,9 @@ let SportsService = SportsService_1 = class SportsService {
         this.handleNbaStandingsSync().catch(e => this.logger.error(e));
         this.handleSoccerStandingsSync().catch(e => this.logger.error(e));
         this.handleNhlStandingsSync().catch(e => this.logger.error(e));
+        this.handleLibertadoresSync().catch(e => this.logger.error(e));
+        this.handleLibertadoresStandingsSync().catch(e => this.logger.error(e));
+        this.syncLeague('soccer', 'conmebol.libertadores', 'LIBERTADORES', ['2026']).catch(e => this.logger.error(e));
     }
     async findAll(league) {
         const cacheKey = `${league.toLowerCase()}_matches_dashboard`;
@@ -88,20 +91,28 @@ let SportsService = SportsService_1 = class SportsService {
     async handleSoccerSync() {
         await this.syncLeague('soccer', 'arg.1', 'SOCCER');
     }
+    async handleLibertadoresSync() {
+        await this.syncLeague('soccer', 'conmebol.libertadores', 'LIBERTADORES');
+    }
     async handleNhlSync() {
         await this.syncLeague('hockey', 'nhl', 'NHL');
     }
-    async syncLeague(sport, espnLeague, dbLeague) {
+    async syncLeague(sport, espnLeague, dbLeague, customDates) {
         try {
-            const today = new Date();
-            const datesToSync = [
-                new Date(today.getTime() - 24 * 60 * 60 * 1000),
-                today,
-                new Date(today.getTime() + 24 * 60 * 60 * 1000)
-            ];
-            for (const date of datesToSync) {
-                const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
-                const url = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${espnLeague}/scoreboard?dates=${dateStr}`;
+            let datesStrings = [];
+            if (customDates) {
+                datesStrings = customDates;
+            }
+            else {
+                const today = new Date();
+                datesStrings = [
+                    new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0].replace(/-/g, ''),
+                    today.toISOString().split('T')[0].replace(/-/g, ''),
+                    new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0].replace(/-/g, '')
+                ];
+            }
+            for (const dateStr of datesStrings) {
+                const url = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${espnLeague}/scoreboard?dates=${dateStr}&limit=300`;
                 const { data } = await axios_1.default.get(url);
                 const events = data.events || [];
                 for (const event of events) {
@@ -211,6 +222,9 @@ let SportsService = SportsService_1 = class SportsService {
     async handleSoccerStandingsSync() {
         await this.syncStandings('soccer', 'arg.1', 'SOCCER');
     }
+    async handleLibertadoresStandingsSync() {
+        await this.syncStandings('soccer', 'conmebol.libertadores', 'LIBERTADORES');
+    }
     async handleNhlStandingsSync() {
         await this.syncStandings('hockey', 'nhl', 'NHL');
     }
@@ -304,6 +318,12 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleLibertadoresSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
 ], SportsService.prototype, "handleNhlSync", null);
 __decorate([
     (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
@@ -317,6 +337,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SportsService.prototype, "handleSoccerStandingsSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleLibertadoresStandingsSync", null);
 __decorate([
     (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
     __metadata("design:type", Function),

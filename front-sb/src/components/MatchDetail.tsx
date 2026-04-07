@@ -2,7 +2,7 @@ import React from 'react'
 import { useStore } from '../store/useStore'
 
 const MatchDetail: React.FC = () => {
-  const { matches, selectedMatchId, setSelectedMatchId, odds, t } = useStore()
+  const { matches, selectedMatchId, setSelectedMatchId, odds } = useStore()
   const match = matches.find(m => m.id === selectedMatchId)
 
   if (!match) return null
@@ -45,7 +45,7 @@ const MatchDetail: React.FC = () => {
             <div className="flex items-center gap-2">
                 <span className={`w-1.5 h-1.5 rounded-full ${match.status === 'LIVE' ? 'bg-red-500 animate-pulse' : 'bg-gray-600'}`}></span>
                 <p className={`text-[10px] font-black uppercase tracking-widest ${match.status === 'LIVE' ? 'text-red-500' : 'text-gray-300'}`}>
-                    {match.status === 'LIVE' ? t('sbEnVivo') : match.status === 'FINISHED' ? t('sbFinalizado') : t('sbProgramado')}
+                    {match.status === 'LIVE' ? 'Live' : match.status === 'FINISHED' ? 'Finished' : 'Scheduled'}
                 </p>
             </div>
           </div>
@@ -66,7 +66,7 @@ const MatchDetail: React.FC = () => {
                         </div>
                         <div className="text-center">
                             <span className="block text-[11px] font-black text-white uppercase tracking-tighter leading-tight drop-shadow-sm truncate max-w-[80px]">{match.homeTeam}</span>
-                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">{t('sbLocal')}</span>
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Home</span>
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@ const MatchDetail: React.FC = () => {
                         </div>
                         <div className="text-center">
                             <span className="block text-[11px] font-black text-white uppercase tracking-tighter leading-tight drop-shadow-sm truncate max-w-[80px]">{match.awayTeam}</span>
-                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">{t('sbVisita')}</span>
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Away</span>
                         </div>
                     </div>
                 </div>
@@ -108,14 +108,14 @@ const MatchDetail: React.FC = () => {
             {match.homeLinescores && match.homeLinescores.length > 0 && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
                     <div className="flex items-center justify-between mb-4 px-1">
-                        <h3 className="text-[9px] font-black text-gray-500 uppercase tracking-[0.25em]">{t('sbStatsPeriod')}</h3>
+                        <h3 className="text-[9px] font-black text-gray-500 uppercase tracking-[0.25em]">Period Stats</h3>
                         <div className="h-px flex-1 bg-white/5 mx-4"></div>
                     </div>
                     <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-sm">
                         <table className="w-full text-[11px]">
                             <thead>
                                 <tr className="bg-white/5 text-gray-500 uppercase font-black text-[9px] tracking-widest">
-                                    <th className="py-3 px-3 text-left">{t('sbEquipo')}</th>
+                                    <th className="py-3 px-3 text-left">Team</th>
                                     {match.homeLinescores.map((l, i) => <th key={i} className="py-3 text-center w-10">Q{l.period}</th>)}
                                     <th className="py-3 px-4 text-right w-12 border-l border-white/5 bg-white/5 text-white">Total</th>
                                 </tr>
@@ -141,7 +141,7 @@ const MatchDetail: React.FC = () => {
             {match.leaders && match.leaders.length > 0 && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
                     <div className="flex items-center justify-between mb-4 px-1">
-                        <h3 className="text-[9px] font-black text-gray-500 uppercase tracking-[0.25em]">{t('sbIndividualLeaders')}</h3>
+                        <h3 className="text-[9px] font-black text-gray-500 uppercase tracking-[0.25em]">Individual Leaders</h3>
                         <div className="h-px flex-1 bg-white/5 mx-4"></div>
                     </div>
                     <div className="grid grid-cols-1 gap-2.5">
@@ -185,21 +185,21 @@ const MatchDetail: React.FC = () => {
                         <div className="w-8 h-8 bg-[#f4c025] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(244,192,37,0.3)]">
                             <span className="material-symbols-outlined !text-[18px] text-black">analytics</span>
                         </div>
-                        <h4 className="text-[11px] font-black text-white uppercase tracking-widest">{t('sbResultOdds')}</h4>
+                        <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Match Odds</h4>
                     </div>
                     <div className="flex flex-row gap-2">
                         <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">{t('sbLocal')}</p>
+                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Home</p>
                             <p className="text-base font-black text-[#f4c025]">{odds[match.id].homeWin || '-'}</p>
                         </div>
                         {odds[match.id].draw !== undefined && odds[match.id].draw !== null && (
                             <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                                <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">{t('sbEmpate')}</p>
+                                <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Draw</p>
                                 <p className="text-base font-black text-[#f4c025]">{odds[match.id].draw}</p>
                             </div>
                         )}
                         <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">{t('sbVisita')}</p>
+                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Away</p>
                             <p className="text-base font-black text-[#f4c025]">{odds[match.id].awayWin || '-'}</p>
                         </div>
                     </div>

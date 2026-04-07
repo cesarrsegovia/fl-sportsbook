@@ -30,6 +30,10 @@ export class SportsService implements OnModuleInit {
         this.handleNbaStandingsSync().catch(e => this.logger.error(e));
         this.handleSoccerStandingsSync().catch(e => this.logger.error(e));
         this.handleNhlStandingsSync().catch(e => this.logger.error(e));
+        this.handleLibertadoresSync().catch(e => this.logger.error(e));
+        this.handleLibertadoresStandingsSync().catch(e => this.logger.error(e));
+        // Force full fetch of the entire Libertadores fixture on startup
+        this.syncLeague('soccer', 'conmebol.libertadores', 'LIBERTADORES', ['2026']).catch(e => this.logger.error(e));
     }
 
     /**
@@ -102,6 +106,14 @@ export class SportsService implements OnModuleInit {
     }
 
     /**
+     * Automated sync for Copa Libertadores every minute.
+     */
+    @Cron(CronExpression.EVERY_MINUTE)
+    async handleLibertadoresSync() {
+        await this.syncLeague('soccer', 'conmebol.libertadores', 'LIBERTADORES');
+    }
+
+    /**
      * Automated sync for NHL Hockey every minute.
      */
     @Cron(CronExpression.EVERY_MINUTE)
@@ -116,18 +128,22 @@ export class SportsService implements OnModuleInit {
      * 3. Broadcasts live updates via WebSocket.
      * 4. Updates betting odds if available.
      */
-    private async syncLeague(sport: string, espnLeague: string, dbLeague: string) {
+    private async syncLeague(sport: string, espnLeague: string, dbLeague: string, customDates?: string[]) {
         try {
-            const today = new Date();
-            const datesToSync = [
-                new Date(today.getTime() - 24 * 60 * 60 * 1000), // Yesterday
-                today,                                         // Today
-                new Date(today.getTime() + 24 * 60 * 60 * 1000)  // Tomorrow
-            ];
+            let datesStrings: string[] = [];
+            if (customDates) {
+                datesStrings = customDates;
+            } else {
+                const today = new Date();
+                datesStrings = [
+                    new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0].replace(/-/g, ''), // Yesterday
+                    today.toISOString().split('T')[0].replace(/-/g, ''),                                         // Today
+                    new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0].replace(/-/g, '')  // Tomorrow
+                ];
+            }
 
-            for (const date of datesToSync) {
-                const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
-                const url = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${espnLeague}/scoreboard?dates=${dateStr}`;
+            for (const dateStr of datesStrings) {
+                const url = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${espnLeague}/scoreboard?dates=${dateStr}&limit=300`;
                 const { data } = await axios.get(url);
                 const events = data.events || [];
 
@@ -259,6 +275,14 @@ export class SportsService implements OnModuleInit {
     @Cron(CronExpression.EVERY_12_HOURS)
     async handleSoccerStandingsSync() {
         await this.syncStandings('soccer', 'arg.1', 'SOCCER');
+    }
+
+    /**
+     * Syncs Copa Libertadores standings every 12 hours.
+     */
+    @Cron(CronExpression.EVERY_12_HOURS)
+    async handleLibertadoresStandingsSync() {
+        await this.syncStandings('soccer', 'conmebol.libertadores', 'LIBERTADORES');
     }
 
     /**

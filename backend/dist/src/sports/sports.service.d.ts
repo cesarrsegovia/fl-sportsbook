@@ -14,10 +14,12 @@ export declare class SportsService implements OnModuleInit {
     getStandings(league: string): Promise<TeamRanking[]>;
     handleNbaSync(): Promise<void>;
     handleSoccerSync(): Promise<void>;
+    handleLibertadoresSync(): Promise<void>;
     handleNhlSync(): Promise<void>;
     private syncLeague;
     handleNbaStandingsSync(): Promise<void>;
     handleSoccerStandingsSync(): Promise<void>;
+    handleLibertadoresStandingsSync(): Promise<void>;
     handleNhlStandingsSync(): Promise<void>;
     private syncStandings;
 }
