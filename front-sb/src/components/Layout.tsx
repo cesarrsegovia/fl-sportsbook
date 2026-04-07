@@ -10,9 +10,10 @@ export default function Layout({ children }: LayoutProps) {
   const { selectedSport, setSelectedSport, toggleBetSlip, bets } = useStore();
 
   const sports = [
-    { id: 'NBA', label: 'NBA' },
-    { id: 'Soccer', label: 'Soccer' },
-    { id: 'NHL', label: 'NHL' },
+    { id: 'FIFA World Cup', label: 'FIFA World Cup', icon: 'trophy' },
+    { id: 'NBA', label: 'NBA', icon: 'sports_basketball' },
+    { id: 'Soccer', label: 'Soccer', icon: 'sports_soccer' },
+    { id: 'NHL', label: 'NHL', icon: 'sports_hockey' },
   ];
 
   return (
@@ -23,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex items-center gap-1 font-black italic tracking-tighter text-3xl select-none cursor-default uppercase" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.05em" }}>
             <span className="text-white">FL-SP</span>
             <span className="flex items-center -mx-0.5">
-              <span className="material-symbols-outlined text-4xl text-[#FE9400]" style={{ fontVariationSettings: "'FILL' 1, 'wght' 900" }}>sports_basketball</span>
+              <span className="material-symbols-outlined text-4xl text-[#FE9400]" style={{ fontVariationSettings: "'FILL' 1, 'wght' 900" }}>trophy</span>
             </span>
             <span className="text-white">RTS</span>
           </div>
@@ -32,7 +33,7 @@ export default function Layout({ children }: LayoutProps) {
               <button 
                 key={sport.id}
                 onClick={() => setSelectedSport(sport.id)}
-                className={`transition-colors py-1 ${selectedSport === sport.id ? 'text-[#F8F9FE] border-b-2 border-[#85ADFF]' : 'text-[#F8F9FE]/60 hover:text-[#F8F9FE]'}`}
+                className={`transition-colors py-1 flex items-center gap-2 ${selectedSport === sport.id ? 'text-[#F8F9FE] border-b-2 border-[#85ADFF]' : 'text-[#F8F9FE]/60 hover:text-[#F8F9FE]'}`}
               >
                 {sport.label}
               </button>
@@ -101,8 +102,8 @@ export default function Layout({ children }: LayoutProps) {
             onClick={() => setSelectedSport(sport.id)}
             className={`flex flex-col items-center justify-center font-['Inter'] text-[10px] font-bold uppercase transition-transform duration-150 ${selectedSport === sport.id ? 'text-[#FE9400] scale-110' : 'text-[#F8F9FE]/40'}`}
           >
-            <span className="material-symbols-outlined">{sport.id.toLowerCase() === 'soccer' ? 'sports_soccer' : sport.id === 'NHL' ? 'sports_hockey' : 'sports_basketball'}</span>
-            <span>{sport.id}</span>
+            <span className="material-symbols-outlined">{sport.icon || (sport.id.toLowerCase() === 'soccer' ? 'sports_soccer' : sport.id === 'NHL' ? 'sports_hockey' : 'sports_basketball')}</span>
+            <span className="max-w-[60px] truncate text-center">{sport.label}</span>
           </button>
         ))}
         <button onClick={() => toggleBetSlip()} className="flex flex-col items-center justify-center text-[#F8F9FE]/40 hover:text-[#FE9400] font-['Inter'] text-[10px] font-bold uppercase transition-colors duration-150 relative">

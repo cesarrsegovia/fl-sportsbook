@@ -1,24 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useStore } from './store/useStore'
 import axios from 'axios'
 import Layout from './components/Layout'
 import HomeDashboard from './components/HomeDashboard'
 
 const App: React.FC = () => {
-  const { 
+  const {
     selectedSport,
-    setMatches, 
-    setStandings, 
+    setMatches,
+    setStandings,
     updateOdds,
-    t
   } = useStore()
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
   const fetchData = async () => {
-    setLoading(true)
-    setError(null)
     try {
       const sportPath = selectedSport.toLowerCase()
       const [matchesRes, standingsRes] = await Promise.all([
@@ -40,10 +34,8 @@ const App: React.FC = () => {
           })
         }
       })
-    } catch (e) {
-      setError(t('errorConnection') || 'Could not connect to server.')
-    } finally {
-      setLoading(false)
+    } catch {
+      // Background data sync — errors are non-blocking in the new WC-focused UI
     }
   }
 
@@ -53,7 +45,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <HomeDashboard loading={loading} error={error} onRetry={fetchData} />
+      <HomeDashboard />
     </Layout>
   )
 }
