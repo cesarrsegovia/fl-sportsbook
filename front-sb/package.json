@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sportsbook/types": "file:../backend/libs/types",
+    "@sportsbook/shared-types": "file:../backend/libs/shared-types",
     "axios": "^1.13.6",
+    "ethers": "^6.16.0",
     "jimp": "^1.6.1",
     "lucide-react": "^0.577.0",
     "react": "^19.2.0",

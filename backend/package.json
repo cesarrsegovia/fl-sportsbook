@@ -12,6 +12,14 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "start:bet-execution": "nest start bet-execution",
+    "start:bet-execution:dev": "nest start bet-execution --watch",
+    "start:grading": "nest start grading",
+    "start:grading:dev": "nest start grading --watch",
+    "start:settlement": "nest start settlement",
+    "start:settlement:dev": "nest start settlement --watch",
+    "start:admin": "nest start admin",
+    "start:admin:dev": "nest start admin --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -20,20 +28,32 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-socket.io": "^11.1.16",
     "@nestjs/schedule": "^6.1.1",
+    "@nestjs/throttler": "^6.5.0",
     "@nestjs/websockets": "^11.1.16",
+    "@sportsbook/prisma": "file:./libs/prisma",
+    "@sportsbook/shared-types": "file:./libs/shared-types",
     "axios": "^1.13.6",
+    "bullmq": "^5.73.5",
     "cache-manager": "^7.2.8",
     "cache-manager-redis-store": "^3.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "ethers": "^6.16.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "socket.io": "^4.8.3",
-    "@sportsbook/types": "file:./libs/types"
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -46,6 +66,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "dotenv": "^17.3.1",
     "eslint": "^9.18.0",
@@ -70,7 +91,11 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
+    "roots": [
+      "<rootDir>/apps",
+      "<rootDir>/libs"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

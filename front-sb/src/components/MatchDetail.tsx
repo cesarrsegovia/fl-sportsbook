@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { useStore } from '../store/useStore'
+import type { SportsbookEvent } from '../hooks/useEvents'
+
+const API_URL = 'http://127.0.0.1:3000'
 
 const MatchDetail: React.FC = () => {
-  const { matches, selectedMatchId, setSelectedMatchId, odds } = useStore()
+  const { matches, selectedMatchId, setSelectedMatchId, odds, addBet } = useStore()
+  const [sbEvent, setSbEvent] = useState<SportsbookEvent | null>(null)
+
+  useEffect(() => {
+    if (!selectedMatchId) return
+    // Try to find sportsbook event for this match
+    axios.get(`${API_URL}/events?status=ACTIVE`).then(res => {
+      const found = res.data.find((e: SportsbookEvent) => e.matchId === selectedMatchId)
+      setSbEvent(found ?? null)
+    }).catch(() => setSbEvent(null))
+  }, [selectedMatchId])
   const match = matches.find(m => m.id === selectedMatchId)
 
   if (!match) return null
@@ -186,23 +200,65 @@ const MatchDetail: React.FC = () => {
                             <span className="material-symbols-outlined !text-[18px] text-black">analytics</span>
                         </div>
                         <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Match Odds</h4>
+                        {sbEvent && sbEvent.status === 'ACTIVE' && (
+                            <span className="ml-auto text-[9px] font-black text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">BETTING OPEN</span>
+                        )}
                     </div>
                     <div className="flex flex-row gap-2">
-                        <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Home</p>
-                            <p className="text-base font-black text-[#f4c025]">{odds[match.id].homeWin || '-'}</p>
-                        </div>
-                        {odds[match.id].draw !== undefined && odds[match.id].draw !== null && (
-                            <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                                <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Draw</p>
-                                <p className="text-base font-black text-[#f4c025]">{odds[match.id].draw}</p>
-                            </div>
-                        )}
-                        <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-center">
-                            <p className="text-[8px] text-gray-500 font-bold uppercase mb-1">Away</p>
-                            <p className="text-base font-black text-[#f4c025]">{odds[match.id].awayWin || '-'}</p>
-                        </div>
+                        {(() => {
+                            const matchWinner = sbEvent?.markets?.find(m => m.type === 'MATCH_WINNER')
+                            const getSelection = (name: string) => matchWinner?.selections.find(s => s.name === name)
+
+                            const handleOddClick = (selectionName: 'home' | 'away' | 'draw', oddsValue: number) => {
+                                const sel = getSelection(selectionName)
+                                addBet({
+                                    matchId: match.id,
+                                    selectionId: sel?.id ?? '',
+                                    selection: selectionName,
+                                    oddsValue,
+                                    matchText: `${match.homeTeam} vs ${match.awayTeam}`,
+                                    selectionText: selectionName === 'home' ? match.homeTeam : selectionName === 'away' ? match.awayTeam : 'Draw',
+                                })
+                            }
+
+                            return (
+                                <>
+                                    {odds[match.id].homeWin && (
+                                        <button
+                                            onClick={() => handleOddClick('home', odds[match.id].homeWin!)}
+                                            className="flex-1 bg-white/5 border border-white/10 hover:border-[#f4c025]/50 hover:bg-[#f4c025]/10 rounded-2xl p-3 text-center transition-all active:scale-95 group"
+                                        >
+                                            <p className="text-[8px] text-gray-500 group-hover:text-[#f4c025] font-bold uppercase mb-1">Home</p>
+                                            <p className="text-base font-black text-[#f4c025]">{odds[match.id].homeWin}</p>
+                                        </button>
+                                    )}
+                                    {odds[match.id].draw !== undefined && odds[match.id].draw !== null && (
+                                        <button
+                                            onClick={() => handleOddClick('draw', odds[match.id].draw!)}
+                                            className="flex-1 bg-white/5 border border-white/10 hover:border-[#f4c025]/50 hover:bg-[#f4c025]/10 rounded-2xl p-3 text-center transition-all active:scale-95 group"
+                                        >
+                                            <p className="text-[8px] text-gray-500 group-hover:text-[#f4c025] font-bold uppercase mb-1">Draw</p>
+                                            <p className="text-base font-black text-[#f4c025]">{odds[match.id].draw}</p>
+                                        </button>
+                                    )}
+                                    {odds[match.id].awayWin && (
+                                        <button
+                                            onClick={() => handleOddClick('away', odds[match.id].awayWin!)}
+                                            className="flex-1 bg-white/5 border border-white/10 hover:border-[#f4c025]/50 hover:bg-[#f4c025]/10 rounded-2xl p-3 text-center transition-all active:scale-95 group"
+                                        >
+                                            <p className="text-[8px] text-gray-500 group-hover:text-[#f4c025] font-bold uppercase mb-1">Away</p>
+                                            <p className="text-base font-black text-[#f4c025]">{odds[match.id].awayWin}</p>
+                                        </button>
+                                    )}
+                                </>
+                            )
+                        })()}
                     </div>
+                    {sbEvent && sbEvent.status !== 'ACTIVE' && (
+                        <p className="text-center text-[10px] text-gray-500 mt-3 font-bold uppercase tracking-widest">
+                            Betting suspended
+                        </p>
+                    )}
                 </div>
             )}
         </div>

@@ -22,9 +22,10 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@sportsbook/types": ["./libs/types/index.ts"]
+      "@sportsbook/shared-types": ["./libs/shared-types/index.ts"],
+      "@sportsbook/prisma": ["./libs/prisma/src/index.ts"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["apps/**/*", "libs/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

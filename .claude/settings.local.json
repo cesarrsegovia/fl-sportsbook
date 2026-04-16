@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p apps/sportsbook-api/src)",
+      "Bash(cp -r src/. apps/sportsbook-api/src/)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npm create:*)"
+    ]
+  }
+}

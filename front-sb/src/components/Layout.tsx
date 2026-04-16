@@ -1,22 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useStore } from '../store/useStore';
 import BetSlip from './BetSlip';
+import WalletButton from './WalletButton';
+import QuoteModal from './QuoteModal';
+import MyBets from './MyBets';
+import { io } from 'socket.io-client';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { selectedSport, setSelectedSport, toggleBetSlip, bets } = useStore();
+  const { selectedSport, setSelectedSport, toggleBetSlip, bets, walletAddress, updateTicketStatus, selectedSection, setSelectedSection } = useStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 4000);
+  };
+
+  // WebSocket connection for TICKET_UPDATE
+  useEffect(() => {
+    const socket = io('http://127.0.0.1:3000');
+    socket.on('TICKET_UPDATE', (data: { ticketId: string; userId: string; status: string }) => {
+      if (!walletAddress || data.userId !== walletAddress) return;
+      updateTicketStatus(data.ticketId, data.status);
+      if (data.status === 'SETTLED') showToast('Payout sent to your wallet!');
+      if (data.status === 'WON') showToast('You won! Payout processing…');
+    });
+    return () => { socket.disconnect(); };
+  }, [walletAddress, updateTicketStatus]);
 
   const sports = [
     { id: 'FIFA World Cup', label: 'FIFA World Cup', icon: 'trophy' },
     { id: 'Libertadores', label: 'Libertadores', icon: 'emoji_events' },
+    { id: 'UCL', label: 'UCL', icon: 'emoji_events' },
+    { id: 'EPL', label: 'EPL', icon: 'sports_soccer' },
     { id: 'NBA', label: 'NBA', icon: 'sports_basketball' },
     { id: 'Soccer', label: 'Soccer', icon: 'sports_soccer' },
     { id: 'NHL', label: 'NHL', icon: 'sports_hockey' },
+    { id: 'MLB', label: 'MLB', icon: 'sports_baseball' },
+    { id: 'NFL', label: 'NFL', icon: 'sports_football' },
   ];
 
   return (
@@ -50,12 +78,13 @@ export default function Layout({ children }: LayoutProps) {
             <input className="bg-transparent border-none outline-none focus:ring-0 text-sm w-48 text-on-surface" placeholder="Search markets..." type="text" />
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => toggleBetSlip()} className="p-2 hover:bg-[#282D31]/50 transition-all rounded-full scale-95 active:opacity-80 transition-transform relative">
-              <span className="material-symbols-outlined text-[#85ADFF]">account_balance_wallet</span>
-              {bets.length > 0 && <span className="absolute top-1 right-0 w-3.5 h-3.5 bg-secondary rounded-full border border-surface text-[8px] font-black text-on-secondary flex items-center justify-center">{bets.length}</span>}
+            <WalletButton />
+            <button onClick={() => setSelectedSection('mybets')} className="p-2 hover:bg-[#282D31]/50 transition-all rounded-full scale-95 active:opacity-80">
+              <span className="material-symbols-outlined text-[#85ADFF]">history</span>
             </button>
-            <button className="p-2 hover:bg-[#282D31]/50 transition-all rounded-full scale-95 active:opacity-80 transition-transform">
-              <span className="material-symbols-outlined text-[#85ADFF]">person</span>
+            <button onClick={() => toggleBetSlip()} className="p-2 hover:bg-[#282D31]/50 transition-all rounded-full scale-95 active:opacity-80 relative">
+              <span className="material-symbols-outlined text-[#85ADFF]">receipt_long</span>
+              {bets.length > 0 && <span className="absolute top-1 right-0 w-3.5 h-3.5 bg-secondary rounded-full border border-surface text-[8px] font-black text-on-secondary flex items-center justify-center">{bets.length}</span>}
             </button>
           </div>
         </div>
@@ -91,9 +120,9 @@ export default function Layout({ children }: LayoutProps) {
               <span className="material-symbols-outlined shrink-0 text-xl">trophy</span> 
               {isSidebarOpen && <span className="whitespace-nowrap">Leagues</span>}
             </button>
-            <button className={`flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out ${isSidebarOpen ? '' : 'justify-center w-full rounded-lg'}`}>
-              <span className="material-symbols-outlined shrink-0 text-xl">history</span> 
-              {isSidebarOpen && <span className="whitespace-nowrap">History</span>}
+            <button onClick={() => setSelectedSection('mybets')} className={`flex items-center gap-3 p-3 text-[#F8F9FE]/50 hover:bg-[#1C2024] hover:text-[#F8F9FE] transition-all duration-200 ease-in-out ${isSidebarOpen ? '' : 'justify-center w-full rounded-lg'}`}>
+              <span className="material-symbols-outlined shrink-0 text-xl">history</span>
+              {isSidebarOpen && <span className="whitespace-nowrap">My Bets</span>}
             </button>
           </nav>
           <div className="mt-auto py-4">
@@ -105,11 +134,13 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Main Content Area */}
         <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'md:ml-64' : 'md:ml-20'} lg:mr-80 md:pb-8 border-r border-outline-variant/5`}>
-          {children}
+          {selectedSection === 'mybets' ? <MyBets /> : children}
         </main>
 
         <BetSlip />
       </div>
+
+      <QuoteModal />
 
       {/* Mobile Navigation Shell */}
       <nav className="fixed bottom-0 w-full z-50 md:hidden bg-[#0B0E11]/90 backdrop-blur-lg border-t border-[#1C2024] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex justify-around items-center h-16 px-4">
@@ -134,6 +165,12 @@ export default function Layout({ children }: LayoutProps) {
       <button className="fixed bottom-20 right-6 md:hidden w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-2xl z-40 active:scale-90 transition-transform">
         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_circle</span>
       </button>
+
+      {toast && (
+        <div className="fixed top-20 right-6 z-50 bg-emerald-500 text-white text-sm font-black px-4 py-3 rounded-xl shadow-xl animate-pulse">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

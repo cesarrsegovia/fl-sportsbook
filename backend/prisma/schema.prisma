@@ -27,7 +27,8 @@ model Match {
   awayLinescores Json?
   homeLinescores Json?
   leaders        Json?
-  odds           Odds[]
+  odds            Odds[]
+  sportsbookEvent SportsbookEvent?
 
   @@index([sport, league])
   @@index([status])
@@ -69,4 +70,298 @@ model TeamRanking {
   points       Int      @default(0)
 
   @@unique([league, teamName])
+}
+
+// ─── Sportsbook Models (Fase 1–3) ────────────────────────────────────────────
+
+model SportsbookEvent {
+  id          String      @id @default(uuid())
+  matchId     String      @unique
+  status      EventStatus @default(ACTIVE)
+  lockTime    DateTime
+  feedFreshAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  match   Match    @relation(fields: [matchId], references: [id])
+  markets Market[]
+}
+
+enum EventStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+  FINISHED
+}
+
+model Market {
+  id        String       @id @default(uuid())
+  eventId   String
+  type      MarketType
+  status    MarketStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  event      SportsbookEvent @relation(fields: [eventId], references: [id])
+  selections Selection[]
+}
+
+enum MarketType {
+  MATCH_WINNER
+  OVER_UNDER
+  ASIAN_HANDICAP
+  BOTH_TEAMS_TO_SCORE
+  HALF_TIME_RESULT
+  DOUBLE_CHANCE
+}
+
+enum MarketStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+model Selection {
+  id         String @id @default(uuid())
+  marketId   String
+  name       String
+  oddsValue  Float?
+
+  market          Market            @relation(fields: [marketId], references: [id])
+  quotes          Quote[]
+  parlayQuoteLegs ParlayQuoteLeg[]
+  parlayLegs      ParlayLeg[]
+  promotions      Promotion[]
+}
+
+model Quote {
+  id              String      @id @default(uuid())
+  selectionId     String?
+  userId          String
+  stake           Float
+  oddsAtQuote     Float
+  expectedPayout  Float
+  status          QuoteStatus @default(PENDING)
+  txParams        Json?
+  expiresAt       DateTime
+  createdAt       DateTime    @default(now())
+  type            TicketType  @default(SINGLE)
+  promotionId     String?
+  isFreeBet       Boolean     @default(false)
+  freeBetAmount   Float?
+
+  selection  Selection?         @relation(fields: [selectionId], references: [id])
+  ticket     Ticket?
+  parlayLegs ParlayQuoteLeg[]
+  promotion  Promotion?         @relation(fields: [promotionId], references: [id])
+}
+
+enum TicketType {
+  SINGLE
+  PARLAY
+}
+
+model ParlayQuoteLeg {
+  id          String @id @default(uuid())
+  quoteId     String
+  selectionId String
+  oddsValue   Float
+
+  quote     Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  selection Selection @relation(fields: [selectionId], references: [id])
+
+  @@unique([quoteId, selectionId])
+}
+
+model ParlayLeg {
+  id          String        @id @default(uuid())
+  ticketId    String
+  selectionId String
+  quoteId     String
+  oddsValue   Float
+  outcome     GradeOutcome?
+  gradedAt    DateTime?
+
+  ticket    Ticket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  selection Selection @relation(fields: [selectionId], references: [id])
+
+  @@unique([ticketId, selectionId])
+  @@index([ticketId])
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REJECTED
+}
+
+model Ticket {
+  id            String       @id @default(uuid())
+  quoteId       String       @unique
+  userId        String
+  txHash        String?
+  blockNumber   Int?
+  confirmedAt   DateTime?
+  status        TicketStatus @default(AWAITING_SIGNATURE)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  type          TicketType   @default(SINGLE)
+  cashedOutAt   DateTime?
+  cashoutAmount Float?
+  promotionId   String?
+  isFreeBet     Boolean      @default(false)
+  freeBetAmount Float?
+
+  quote         Quote          @relation(fields: [quoteId], references: [id])
+  gradingRecord GradingRecord?
+  settlementJob SettlementJob?
+  parlayLegs    ParlayLeg[]
+  promotion     Promotion?     @relation(fields: [promotionId], references: [id])
+  redemption    PromotionRedemption?
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum TicketStatus {
+  DRAFT
+  QUOTE_PENDING
+  QUOTE_ISSUED
+  AWAITING_SIGNATURE
+  SUBMITTED
+  CONFIRMING
+  CONFIRMED
+  REJECTED
+  EXPIRED
+  LOST
+  WON
+  VOID
+  REFUNDED
+  SETTLING
+  SETTLED
+  SETTLEMENT_FAILED
+  MANUAL_REVIEW
+  CASHED_OUT
+}
+
+model GradingRecord {
+  id           String       @id @default(uuid())
+  ticketId     String       @unique
+  outcome      GradeOutcome
+  resultSource String
+  resultRaw    Json?
+  gradedAt     DateTime     @default(now())
+  gradedBy     String       @default("system")
+  notes        String?
+
+  ticket        Ticket         @relation(fields: [ticketId], references: [id])
+  settlementJob SettlementJob?
+}
+
+enum GradeOutcome {
+  WIN
+  LOSS
+  VOID
+  REFUND
+  MANUAL_REVIEW
+}
+
+model SettlementJob {
+  id              String           @id @default(uuid())
+  ticketId        String           @unique
+  gradingRecordId String           @unique
+  idempotencyKey  String           @unique
+  amount          Float
+  toWallet        String
+  txHash          String?
+  status          SettlementStatus @default(PENDING)
+  attempts        Int              @default(0)
+  lastAttemptAt   DateTime?
+  settledAt       DateTime?
+  createdAt       DateTime         @default(now())
+
+  notes         String?
+
+  ticket        Ticket        @relation(fields: [ticketId], references: [id])
+  gradingRecord GradingRecord @relation(fields: [gradingRecordId], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum SettlementStatus {
+  PENDING
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  MANUAL_INTERVENTION
+}
+
+model Promotion {
+  id            String           @id @default(uuid())
+  type          PromotionType
+  code          String?          @unique
+  name          String
+  description   String
+  startsAt      DateTime
+  expiresAt     DateTime
+  status        PromotionStatus  @default(ACTIVE)
+  maxUses       Int?
+  usedCount     Int              @default(0)
+  freeBetAmount Float?
+  selectionId   String?
+  boostedOdds   Float?
+  originalOdds  Float?
+  createdAt     DateTime         @default(now())
+
+  selection   Selection?            @relation(fields: [selectionId], references: [id])
+  redemptions PromotionRedemption[]
+  quotes      Quote[]
+  tickets     Ticket[]
+
+  @@index([status])
+  @@index([expiresAt])
+}
+
+enum PromotionType {
+  FREE_BET
+  ODDS_BOOST
+}
+
+enum PromotionStatus {
+  ACTIVE
+  PAUSED
+  EXPIRED
+  DEPLETED
+}
+
+model PromotionRedemption {
+  id          String   @id @default(uuid())
+  promotionId String
+  userId      String
+  ticketId    String?  @unique
+  redeemedAt  DateTime @default(now())
+
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+  ticket    Ticket?   @relation(fields: [ticketId], references: [id])
+
+  @@unique([promotionId, userId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  entity    String
+  entityId  String
+  action    String
+  actor     String
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@index([actor])
 }

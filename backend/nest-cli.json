@@ -1,8 +1,66 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/sportsbook-api/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": false,
+    "tsConfigPath": "apps/sportsbook-api/tsconfig.app.json"
+  },
+  "projects": {
+    "sportsbook-api": {
+      "type": "application",
+      "root": "apps/sportsbook-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/sportsbook-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sportsbook-api/tsconfig.app.json"
+      }
+    },
+    "odds-ingestion": {
+      "type": "application",
+      "root": "apps/odds-ingestion",
+      "entryFile": "main",
+      "sourceRoot": "apps/odds-ingestion/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/odds-ingestion/tsconfig.app.json"
+      }
+    },
+    "bet-execution": {
+      "type": "application",
+      "root": "apps/bet-execution",
+      "entryFile": "main",
+      "sourceRoot": "apps/bet-execution/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bet-execution/tsconfig.app.json"
+      }
+    },
+    "grading": {
+      "type": "application",
+      "root": "apps/grading",
+      "entryFile": "main",
+      "sourceRoot": "apps/grading/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/grading/tsconfig.app.json"
+      }
+    },
+    "settlement": {
+      "type": "application",
+      "root": "apps/settlement",
+      "entryFile": "main",
+      "sourceRoot": "apps/settlement/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/settlement/tsconfig.app.json"
+      }
+    },
+    "admin": {
+      "type": "application",
+      "root": "apps/admin",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin/tsconfig.app.json"
+      }
+    }
   }
 }

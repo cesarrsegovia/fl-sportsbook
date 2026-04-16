@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useStore } from '../store/useStore';
-import type { Match, TeamRanking } from '@sportsbook/types';
+import type { Match, TeamRanking } from '@sportsbook/shared-types';
 
 type ActiveTab = 'today' | 'groups' | 'fixture';
 
