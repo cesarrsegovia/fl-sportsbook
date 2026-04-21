@@ -70,37 +70,7 @@ fl-sportsbook/
 
 ### 1. Variables de entorno
 
-Copia el archivo de ejemplo y completa los valores:
-
-```bash
-cp backend/.env.example backend/.env
-```
-
-Variables clave a configurar:
-
-```env
-# Base de datos
-DATABASE_URL="postgresql://user:pass@localhost:5432/sportsbook?schema=public"
-DATABASE_URL_UNPOOLED="postgresql://user:pass@localhost:5432/sportsbook"
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# JWT (Admin)
-JWT_SECRET=tu_secreto_seguro
-JWT_EXPIRES_IN=8h
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=tu_password
-
-# Blockchain
-CHAIN_RPC_URL=https://mainnet.infura.io/v3/TU_KEY
-SETTLEMENT_WALLET_PRIVATE_KEY=0x...
-SPORTSBOOK_CONTRACT_ADDRESS=0x...
-
-# Odds provider
-ODDS_PROVIDER_API_KEY=tu_api_key
-```
+Ver [backend/SETUP.md](backend/SETUP.md) para el detalle completo de variables de entorno.
 
 ### 2. Instalar dependencias
 
