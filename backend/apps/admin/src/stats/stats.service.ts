@@ -1,3 +1,13 @@
+/**
+ * @module StatsService
+ * @description Servicio de estadísticas consolidadas del sportsbook para el dashboard admin.
+ *
+ * Genera un snapshot en tiempo real con:
+ * - **Tickets**: Confirmados en 24h, pendientes de revisión manual, fallas de liquidación, activos hoy.
+ * - **Liquidaciones**: Pendientes, en intervención manual, confirmadas hoy, monto total pagado.
+ * - **Feed**: Ligas con feed obsoleto (>3 min) o muerto (>5 min).
+ * - **Eventos**: Conteo de eventos activos y suspendidos.
+ */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@sportsbook/prisma';
 
@@ -65,9 +75,7 @@ export class StatsService {
       }),
     ]);
 
-    const staleLeagues = [
-      ...new Set(staleEvents.map((e) => e.match.league)),
-    ];
+    const staleLeagues = [...new Set(staleEvents.map((e) => e.match.league))];
     const deadLeagues = [...new Set(deadEvents.map((e) => e.match.league))];
 
     return {

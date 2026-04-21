@@ -1,11 +1,17 @@
+/**
+ * Controlador de gestión administrativa de liquidaciones.
+ *
+ * Endpoints montados bajo `/admin/settlements`:
+ * - `GET /admin/settlements` — Listar trabajos de liquidación con filtros.
+ * - `GET /admin/settlements/stats` — Estadísticas del pipeline de pagos.
+ * - `POST /admin/settlements/:settlementJobId/retry` — Reintentar un pago fallido.
+ */
 import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { AdminSettlementsService } from './settlements.service.js';
 
 @Controller('admin/settlements')
 export class AdminSettlementsController {
-  constructor(
-    private readonly settlementsService: AdminSettlementsService,
-  ) {}
+  constructor(private readonly settlementsService: AdminSettlementsService) {}
 
   @Get()
   async findAll(

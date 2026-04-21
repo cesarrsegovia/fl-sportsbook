@@ -40,6 +40,9 @@ let AdminEventsController = class AdminEventsController {
     async reactivateMarket(marketId, body, req) {
         return this.eventsService.reactivateMarket(marketId, body.reason, req.user.username);
     }
+    async setMarketOdds(marketId, body, req) {
+        return this.eventsService.setMarketOdds(marketId, body.legs, body.reason, req.user.username);
+    }
 };
 exports.AdminEventsController = AdminEventsController;
 __decorate([
@@ -88,6 +91,15 @@ __decorate([
     __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AdminEventsController.prototype, "reactivateMarket", null);
+__decorate([
+    (0, common_1.Patch)('markets/:marketId/odds'),
+    __param(0, (0, common_1.Param)('marketId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AdminEventsController.prototype, "setMarketOdds", null);
 exports.AdminEventsController = AdminEventsController = __decorate([
     (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [events_service_js_1.AdminEventsService])

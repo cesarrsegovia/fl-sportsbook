@@ -123,6 +123,71 @@ let AdminEventsService = class AdminEventsService {
         });
         return after;
     }
+    async setMarketOdds(marketId, legs, reason, actor) {
+        if (!reason || reason.length < 10) {
+            throw new common_1.BadRequestException('Reason must be at least 10 characters');
+        }
+        if (!legs || legs.length === 0) {
+            throw new common_1.BadRequestException('legs is required');
+        }
+        for (const leg of legs) {
+            if (leg.oddsValue == null || leg.oddsValue <= 1) {
+                throw new common_1.BadRequestException(`Invalid oddsValue for selection ${leg.selectionId}`);
+            }
+        }
+        const market = await this.prisma.market.findUnique({
+            where: { id: marketId },
+            include: { selections: true },
+        });
+        if (!market)
+            throw new common_1.NotFoundException('Market not found');
+        const before = {
+            status: market.status,
+            selections: market.selections.map((s) => ({
+                id: s.id,
+                name: s.name,
+                oddsValue: s.oddsValue,
+            })),
+        };
+        for (const leg of legs) {
+            const exists = market.selections.find((s) => s.id === leg.selectionId);
+            if (!exists) {
+                throw new common_1.BadRequestException(`Selection ${leg.selectionId} not in market ${marketId}`);
+            }
+            await this.prisma.selection.update({
+                where: { id: leg.selectionId },
+                data: { oddsValue: leg.oddsValue },
+            });
+        }
+        const refreshed = await this.prisma.market.findUnique({
+            where: { id: marketId },
+            include: { selections: true },
+        });
+        const allHaveOdds = refreshed.selections.every((s) => s.oddsValue != null && s.oddsValue > 1);
+        const newStatus = allHaveOdds && market.status === 'SUSPENDED' ? 'ACTIVE' : market.status;
+        const after = await this.prisma.market.update({
+            where: { id: marketId },
+            data: { status: newStatus },
+            include: { selections: true },
+        });
+        await this.auditService.log({
+            entity: 'Market',
+            entityId: marketId,
+            action: 'SET_ODDS',
+            actor,
+            before,
+            after: {
+                status: after.status,
+                selections: after.selections.map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    oddsValue: s.oddsValue,
+                })),
+            },
+            reason,
+        });
+        return after;
+    }
     async reactivateMarket(marketId, reason, actor) {
         if (!reason || reason.length < 10) {
             throw new common_1.BadRequestException('Reason must be at least 10 characters');

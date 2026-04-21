@@ -91,9 +91,50 @@ let EventCatalogService = EventCatalogService_1 = class EventCatalogService {
                     }
                 }
             }
+            if (match.sport === 'soccer') {
+                await this.upsertMarketWithSelections(sbEvent.id, 'BOTH_TEAMS_TO_SCORE', [
+                    { name: 'yes', oddsValue: null },
+                    { name: 'no', oddsValue: null },
+                ]);
+                await this.upsertMarketWithSelections(sbEvent.id, 'HALF_TIME_RESULT', [
+                    { name: 'home', oddsValue: null },
+                    { name: 'draw', oddsValue: null },
+                    { name: 'away', oddsValue: null },
+                ]);
+                await this.upsertMarketWithSelections(sbEvent.id, 'DOUBLE_CHANCE', [
+                    { name: '1X', oddsValue: null },
+                    { name: 'X2', oddsValue: null },
+                    { name: '12', oddsValue: null },
+                ]);
+            }
         }
         catch (err) {
             this.logger.error(`syncEventFromMatch(${matchId}) failed:`, err.message);
+        }
+    }
+    async upsertMarketWithSelections(eventId, type, defs) {
+        let market = await this.prisma.market.findFirst({
+            where: { eventId, type },
+        });
+        const allHaveOdds = defs.every((d) => d.oddsValue != null);
+        if (!market) {
+            market = await this.prisma.market.create({
+                data: {
+                    eventId,
+                    type,
+                    status: allHaveOdds ? 'ACTIVE' : 'SUSPENDED',
+                },
+            });
+        }
+        for (const { name, oddsValue } of defs) {
+            const existing = await this.prisma.selection.findFirst({
+                where: { marketId: market.id, name },
+            });
+            if (!existing) {
+                await this.prisma.selection.create({
+                    data: { marketId: market.id, name, oddsValue: oddsValue ?? null },
+                });
+            }
         }
     }
     async suspendStaleEvents() {

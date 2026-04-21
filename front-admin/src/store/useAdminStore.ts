@@ -1,6 +1,15 @@
+/**
+ * @module useAdminStore
+ * @description Gestor de estado global para la aplicación de administración utilizando Zustand.
+ * 
+ * Responsabilidades:
+ * - Persistencia y gestión de sesión (token JWT, username).
+ * - Almacenamiento y actualización de estadísticas (dashboard).
+ * - Notificaciones de tickets pendientes o fallidos (manual review, settlement failed).
+ */
 import { create } from 'zustand';
 
-interface AdminState {
+export interface AdminState {
   token: string | null;
   username: string | null;
   stats: any | null;

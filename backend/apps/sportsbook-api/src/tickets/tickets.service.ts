@@ -2,6 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { OddsGateway } from '../websocket/odds/odds.gateway';
 
+/**
+ * Servicio de gestión de tickets de apuestas del usuario.
+ *
+ * Proporciona:
+ * - Consulta de historial de tickets por usuario con datos completos
+ *   (cotización, selección, mercado, evento, partido, liquidación).
+ * - Consulta de detalle individual de un ticket con registro de calificación.
+ * - Notificación de actualizaciones vía WebSocket.
+ */
 @Injectable()
 export class TicketsService {
   constructor(

@@ -1,3 +1,21 @@
+/**
+ * @module AuditService
+ * @description Servicio centralizado de registro de auditoría.
+ *
+ * Registra todas las acciones administrativas con el estado anterior y posterior
+ * de la entidad afectada, el actor que realizó la acción y el motivo.
+ * Proporciona un wrapper `withAudit()` para simplificar el logging en operaciones transaccionales.
+ *
+ * @example
+ * ```typescript
+ * await auditService.log({
+ *   entity: 'Ticket', entityId: 'ticket-123',
+ *   action: 'VOID', actor: 'admin',
+ *   before: oldTicket, after: newTicket,
+ *   reason: 'Error en cuotas reportado por usuario',
+ * });
+ * ```
+ */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@sportsbook/prisma';
 

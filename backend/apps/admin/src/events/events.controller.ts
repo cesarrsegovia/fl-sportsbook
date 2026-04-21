@@ -1,4 +1,23 @@
-import { Body, Controller, Get, Param, Patch, Query, Req } from '@nestjs/common';
+/**
+ * Controlador de gestión administrativa de eventos y mercados.
+ *
+ * Endpoints montados bajo `/admin`:
+ * - `GET /admin/events` — Listar eventos con filtros.
+ * - `PATCH /admin/events/:eventId/suspend` — Suspender evento.
+ * - `PATCH /admin/events/:eventId/reactivate` — Reactivar evento.
+ * - `PATCH /admin/markets/:marketId/suspend` — Suspender mercado.
+ * - `PATCH /admin/markets/:marketId/reactivate` — Reactivar mercado.
+ * - `PATCH /admin/markets/:marketId/odds` — Ajustar cuotas manualmente.
+ */
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { AdminEventsService } from './events.service.js';
 
 @Controller('admin')

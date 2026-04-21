@@ -1,3 +1,27 @@
+/**
+ * @module QuoteService
+ * @description Servicio de generación y validación de cotizaciones de apuestas.
+ *
+ * Soporta dos tipos de apuestas:
+ * - **Single (Simple)**: Una sola selección.
+ * - **Parlay (Combinada)**: 2 a 8 selecciones de distintos partidos.
+ *
+ * Flujo de cotización:
+ * 1. Valida que la selección/mercado/evento estén activos.
+ * 2. Verifica límites de stake y payout según configuración.
+ * 3. Aplica promociones si se proporcionan (Free Bets, Odds Boosts).
+ * 4. Genera los parámetros de transacción blockchain (txParams).
+ * 5. Almacena la cotización con TTL configurable.
+ * 6. Retorna la cotización con todos los detalles para el frontend.
+ *
+ * Variables de entorno relevantes:
+ * - `QUOTE_TTL_SECONDS` (default: 20): Tiempo de vida de la cotización.
+ * - `MAX_STAKE_USD` (default: 1000): Stake máximo para apuestas simples.
+ * - `MAX_PAYOUT_USD` (default: 10000): Pago máximo para apuestas simples.
+ * - `MAX_PARLAY_STAKE_USD` (default: 200): Stake máximo para parlays.
+ * - `MAX_PARLAY_PAYOUT_USD` (default: 50000): Pago máximo para parlays.
+ * - `SPORTSBOOK_TREASURY_ADDRESS`: Dirección de tesorería para transacciones.
+ */
 import {
   Injectable,
   Logger,
@@ -6,10 +30,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PromotionService } from '../promotions/promotion.service';
-import {
-  RequestQuoteDto,
-  QuoteResponseDto,
-} from './dto/request-quote.dto';
+import { RequestQuoteDto, QuoteResponseDto } from './dto/request-quote.dto';
 
 @Injectable()
 export class QuoteService {
@@ -17,9 +38,7 @@ export class QuoteService {
   private readonly QUOTE_TTL_SECONDS = parseInt(
     process.env.QUOTE_TTL_SECONDS || '20',
   );
-  private readonly MAX_STAKE = parseFloat(
-    process.env.MAX_STAKE_USD || '1000',
-  );
+  private readonly MAX_STAKE = parseFloat(process.env.MAX_STAKE_USD || '1000');
   private readonly MAX_PAYOUT = parseFloat(
     process.env.MAX_PAYOUT_USD || '10000',
   );
@@ -83,7 +102,11 @@ export class QuoteService {
       },
     });
     if (existing) {
-      return this.buildSingleResponse(existing, selection, selection.market.event);
+      return this.buildSingleResponse(
+        existing,
+        selection,
+        selection.market.event,
+      );
     }
 
     // Validar odds drift
@@ -338,7 +361,7 @@ export class QuoteService {
     selection: any,
     event: any,
   ): QuoteResponseDto {
-    const txParams = quote.txParams as any;
+    const txParams = quote.txParams;
     return {
       quoteId: quote.id,
       type: 'SINGLE',
@@ -395,8 +418,7 @@ export class QuoteService {
       return odds.homeWin ?? selection.oddsValue ?? 0;
     if (selection.name === 'away')
       return odds.awayWin ?? selection.oddsValue ?? 0;
-    if (selection.name === 'draw')
-      return odds.draw ?? selection.oddsValue ?? 0;
+    if (selection.name === 'draw') return odds.draw ?? selection.oddsValue ?? 0;
     return selection.oddsValue ?? 0;
   }
 }

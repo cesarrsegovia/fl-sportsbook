@@ -1,3 +1,16 @@
+/**
+ * @module AdminPromotionsService
+ * @description Servicio de gestión administrativa de promociones del sportsbook.
+ *
+ * Funcionalidades:
+ * - **Listar** promociones con filtro opcional por estado.
+ * - **Crear** nuevas promociones de tipo FREE_BET u ODDS_BOOST con validación completa.
+ * - **Pausar** promociones activas (impide nuevas redenciones).
+ * - **Activar** promociones pausadas (solo si no están expiradas).
+ * - **Consultar redenciones** históricas de una promoción específica.
+ *
+ * Todas las acciones de creación/modificación se registran en el log de auditoría.
+ */
 import {
   BadRequestException,
   Injectable,

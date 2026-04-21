@@ -1,3 +1,20 @@
+/**
+ * @module AdminModule
+ * @description Módulo raíz del panel de administración del sportsbook.
+ *
+ * Proporciona una interfaz protegida por JWT para que los operadores gestionen:
+ * - **Eventos y Mercados**: Suspender/reactivar eventos, ajustar cuotas manualmente.
+ * - **Tickets**: Calificación manual, anulación de apuestas.
+ * - **Liquidaciones**: Reintentar pagos fallidos, ver estadísticas de pago.
+ * - **Promociones**: Crear, pausar y activar promociones (Free Bets, Odds Boosts).
+ * - **Feed**: Monitoreo de salud del feed de datos por liga.
+ * - **Alertas**: Detección automática de feeds obsoletos y backlogs.
+ * - **Auditoría**: Registro completo de todas las acciones administrativas.
+ * - **Estadísticas**: Dashboard con métricas de tickets, liquidaciones y eventos.
+ *
+ * Seguridad: Todas las rutas están protegidas por `JwtAuthGuard` (aplicado globalmente
+ * vía `APP_GUARD`), excepto las marcadas con `@Public()`.
+ */
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -30,8 +47,6 @@ import { AdminPromotionsModule } from './promotions/promotions.module.js';
     AdminPromotionsModule,
   ],
   controllers: [AuditController, HealthController],
-  providers: [
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
-  ],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AdminModule {}

@@ -1,3 +1,15 @@
+/**
+ * @module AdminSettlementsService
+ * @description Servicio de gestión administrativa de trabajos de liquidación.
+ *
+ * Permite a los operadores:
+ * - Listar SettlementJobs con filtro por estado y paginación.
+ * - Reintentar manualmente trabajos fallidos o en intervención manual.
+ * - Consultar estadísticas del pipeline de liquidación (pendientes, fallidos, pagados hoy).
+ *
+ * El reintento manual resetea los intentos a 0, cambia el estado a PENDING
+ * y registra la acción en el log de auditoría.
+ */
 import {
   BadRequestException,
   Injectable,
@@ -93,21 +105,26 @@ export class AdminSettlementsService {
       now.getDate(),
     );
 
-    const [pending, failed, manualIntervention, confirmedToday, totalPaidToday] =
-      await Promise.all([
-        this.prisma.settlementJob.count({ where: { status: 'PENDING' } }),
-        this.prisma.settlementJob.count({ where: { status: 'FAILED' } }),
-        this.prisma.settlementJob.count({
-          where: { status: 'MANUAL_INTERVENTION' },
-        }),
-        this.prisma.settlementJob.count({
-          where: { status: 'CONFIRMED', settledAt: { gte: todayStart } },
-        }),
-        this.prisma.settlementJob.aggregate({
-          where: { status: 'CONFIRMED', settledAt: { gte: todayStart } },
-          _sum: { amount: true },
-        }),
-      ]);
+    const [
+      pending,
+      failed,
+      manualIntervention,
+      confirmedToday,
+      totalPaidToday,
+    ] = await Promise.all([
+      this.prisma.settlementJob.count({ where: { status: 'PENDING' } }),
+      this.prisma.settlementJob.count({ where: { status: 'FAILED' } }),
+      this.prisma.settlementJob.count({
+        where: { status: 'MANUAL_INTERVENTION' },
+      }),
+      this.prisma.settlementJob.count({
+        where: { status: 'CONFIRMED', settledAt: { gte: todayStart } },
+      }),
+      this.prisma.settlementJob.aggregate({
+        where: { status: 'CONFIRMED', settledAt: { gte: todayStart } },
+        _sum: { amount: true },
+      }),
+    ]);
 
     return {
       pending,

@@ -5,7 +5,8 @@
       "Bash(cp -r src/. apps/sportsbook-api/src/)",
       "Bash(npm install:*)",
       "Bash(npx prisma:*)",
-      "Bash(npm create:*)"
+      "Bash(npm create:*)",
+      "Bash(npx tsc *)"
     ]
   }
 }

@@ -1,3 +1,13 @@
+/**
+ * @module ResultWatcherService
+ * @description Servicio que monitorea continuamente eventos finalizados sin calificar.
+ *
+ * Se ejecuta cada 30 segundos buscando eventos con status FINISHED que tengan
+ * tickets confirmados sin registro de calificación. Encola jobs de grading
+ * en BullMQ con job IDs idempotentes para evitar duplicados.
+ *
+ * También expone un método para grading reactivo desde actualizaciones de partidos.
+ */
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bullmq';

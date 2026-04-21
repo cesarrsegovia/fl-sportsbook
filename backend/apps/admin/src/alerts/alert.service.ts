@@ -1,3 +1,16 @@
+/**
+ * @module AlertService
+ * @description Servicio de alertas automáticas del panel de administración.
+ *
+ * Ejecuta evaluaciones periódicas cada 2 minutos para detectar:
+ * - **Feed obsoleto**: Eventos activos cuyo `feedFreshAt` supera el umbral configurable
+ *   (`FEED_STALE_THRESHOLD_SECONDS`, default: 180s).
+ * - **Backlog de revisión manual**: Tickets en estado MANUAL_REVIEW.
+ * - **Backlog de liquidación**: SettlementJobs en estado MANUAL_INTERVENTION.
+ *
+ * Las alertas se emiten como warnings en los logs para integración con
+ * sistemas de monitoreo externos (ej. CloudWatch, Datadog).
+ */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '@sportsbook/prisma';
@@ -30,9 +43,7 @@ export class AlertService {
     });
 
     if (staleEvents.length > 0) {
-      const leagues = [
-        ...new Set(staleEvents.map((e) => e.match.league)),
-      ];
+      const leagues = [...new Set(staleEvents.map((e) => e.match.league))];
       this.logger.warn(
         `ALERT: Stale feed detected for leagues: ${leagues.join(', ')}`,
       );

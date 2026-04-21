@@ -1,3 +1,20 @@
+/**
+ * @module FeedService
+ * @description Servicio de monitoreo de salud del feed de datos deportivos.
+ *
+ * Agrupa los eventos del sportsbook por liga y calcula métricas de frescura:
+ * - **FRESH** (< 90s): El feed está funcionando correctamente.
+ * - **STALE** (90s - 300s): El feed tiene retraso, posible problema.
+ * - **DEAD** (> 300s): El feed no recibe actualizaciones, requiere atención.
+ *
+ * @example Respuesta típica:
+ * ```json
+ * { "feeds": [
+ *   { "league": "NBA", "status": "FRESH", "ageSeconds": 45, "activeEventCount": 3 },
+ *   { "league": "MLB", "status": "STALE", "ageSeconds": 120, "activeEventCount": 1 }
+ * ]}
+ * ```
+ */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@sportsbook/prisma';
 

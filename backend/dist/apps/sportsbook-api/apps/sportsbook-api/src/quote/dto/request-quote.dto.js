@@ -9,18 +9,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestQuoteDto = void 0;
+exports.RequestQuoteDto = exports.ParlayLegDto = void 0;
 const class_validator_1 = require("class-validator");
-class RequestQuoteDto {
+const class_transformer_1 = require("class-transformer");
+class ParlayLegDto {
     selectionId;
-    stake;
-    userId;
 }
-exports.RequestQuoteDto = RequestQuoteDto;
+exports.ParlayLegDto = ParlayLegDto;
 __decorate([
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
+], ParlayLegDto.prototype, "selectionId", void 0);
+class RequestQuoteDto {
+    selectionId;
+    selections;
+    stake;
+    userId;
+    promotionId;
+}
+exports.RequestQuoteDto = RequestQuoteDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
 ], RequestQuoteDto.prototype, "selectionId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMinSize)(2),
+    (0, class_validator_1.ArrayMaxSize)(8),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => ParlayLegDto),
+    __metadata("design:type", Array)
+], RequestQuoteDto.prototype, "selections", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0.01),
@@ -31,4 +52,9 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RequestQuoteDto.prototype, "userId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], RequestQuoteDto.prototype, "promotionId", void 0);
 //# sourceMappingURL=request-quote.dto.js.map

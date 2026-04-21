@@ -1,13 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CashoutService } from './cashout.service';
 
+/**
+ * Controlador de retiro anticipado (cashout) de apuestas.
+ *
+ * Endpoints montados bajo `/tickets`:
+ * - `GET /tickets/:ticketId/cashout-quote` — Obtener cotización de cashout.
+ * - `POST /tickets/:ticketId/cashout` — Ejecutar cashout.
+ */
 @Controller('tickets')
 export class CashoutController {
   constructor(private readonly cashoutService: CashoutService) {}

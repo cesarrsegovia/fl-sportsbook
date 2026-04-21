@@ -1,3 +1,19 @@
+/**
+ * @module PromotionService
+ * @description Servicio de gestión de promociones consumido por el flujo de cotización.
+ *
+ * Proporciona:
+ * - **Listado** de promociones activas disponibles para los usuarios.
+ * - **Validación de elegibilidad** de una promoción para un usuario y selección específicos.
+ * - **Soporte para Free Bets**: Apuestas gratis que cubren parte o todo el stake.
+ * - **Soporte para Odds Boosts**: Mejora de cuotas en selecciones específicas.
+ *
+ * Validaciones de elegibilidad:
+ * - La promoción debe estar activa y dentro de su ventana temporal.
+ * - No debe haber alcanzado su límite de usos.
+ * - El usuario no debe haber redimido la promoción previamente.
+ * - Para ODDS_BOOST: la selección debe coincidir con la configurada.
+ */
 import {
   Injectable,
   Logger,

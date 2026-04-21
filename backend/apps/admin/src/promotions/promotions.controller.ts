@@ -1,3 +1,13 @@
+/**
+ * Controlador de gestión administrativa de promociones.
+ *
+ * Endpoints montados bajo `/admin/promotions`:
+ * - `GET /admin/promotions` — Listar promociones (filtro opcional por estado).
+ * - `GET /admin/promotions/:id/redemptions` — Historial de redenciones.
+ * - `POST /admin/promotions` — Crear nueva promoción.
+ * - `PATCH /admin/promotions/:id/pause` — Pausar promoción.
+ * - `PATCH /admin/promotions/:id/activate` — Activar promoción pausada.
+ */
 import {
   Body,
   Controller,

@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+/**
+ * Servicio de consulta de eventos de apuestas.
+ *
+ * Proporciona acceso de solo lectura a los eventos del sportsbook con
+ * sus mercados, selecciones y datos del partido asociado. Soporta filtrado
+ * por deporte, liga y estado del evento.
+ */
 @Injectable()
 export class EventsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(filters: {
-    sport?: string;
-    league?: string;
-    status?: string;
-  }) {
+  async findAll(filters: { sport?: string; league?: string; status?: string }) {
     const where: any = {};
     if (filters.status) {
       where.status = filters.status;

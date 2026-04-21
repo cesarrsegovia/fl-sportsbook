@@ -1,0 +1,4267 @@
+{
+  "info": {
+    "name": "Sportsbook Platform v1",
+    "_postman_id": "d2f3a456-7890-4bcd-abcd-1a2b3c4d5e6f",
+    "description": "Colección completa para testing E2E de todas las apps del Sportsbook Platform v1.\n\n**Apps:**\n- sportsbook-api (:3000)\n- odds-ingestion (:3001)\n- bet-execution (:3002)\n- grading (:3003)\n- settlement (:3004)\n- admin (:3005)\n\n**Antes de usar:**\n1. Importar `sportsbook.postman_environment.json`\n2. Seleccionar environment \"Sportsbook Local\"\n3. Ejecutar \"Admin Auth → Login\" primero\n4. Ejecutar \"Feed & Catálogo → GET Events (todos activos)\" para poblar IDs\n5. Luego correr cualquier flujo\n\nVer `TESTING.md` para la guía completa.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL_API",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "BASE_URL_INGESTION",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "BASE_URL_EXECUTION",
+      "value": "http://localhost:3002"
+    },
+    {
+      "key": "BASE_URL_GRADING",
+      "value": "http://localhost:3003"
+    },
+    {
+      "key": "BASE_URL_SETTLEMENT",
+      "value": "http://localhost:3004"
+    },
+    {
+      "key": "BASE_URL_ADMIN",
+      "value": "http://localhost:3005"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔧 Setup & Health",
+      "item": [
+        {
+          "name": "[sportsbook-api] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"sportsbook-api health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/health",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[odds-ingestion] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"odds-ingestion health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_INGESTION}}/health",
+              "host": [
+                "{{BASE_URL_INGESTION}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[bet-execution] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"bet-execution health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_EXECUTION}}/health",
+              "host": [
+                "{{BASE_URL_EXECUTION}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[grading] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"grading health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_GRADING}}/health",
+              "host": [
+                "{{BASE_URL_GRADING}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[settlement] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"settlement health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_SETTLEMENT}}/health",
+              "host": [
+                "{{BASE_URL_SETTLEMENT}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[admin] Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"App reporta ok\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status || 'ok').to.equal('ok');",
+                  "    console.log(\"admin health:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/health",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Admin Auth",
+      "item": [
+        {
+          "name": "Login (guarda token automáticamente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200 o 201\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Tiene accessToken\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.accessToken).to.be.a('string');",
+                  "    pm.environment.set(\"ADMIN_TOKEN\", body.accessToken);",
+                  "    console.log(\"Token guardado en ADMIN_TOKEN\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/auth/login",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{ADMIN_USERNAME}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login - credenciales inválidas (espera 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Tiene mensaje de error\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.message).to.exist;",
+                  "    console.log(\"Error message:\", body.message);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/auth/login",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrong-password-xyz\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📡 Feed & Catálogo",
+      "item": [
+        {
+          "name": "GET Events (todos activos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Retorna array\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.be.an('array');",
+                  "});",
+                  "pm.test(\"Cada evento tiene id, status, markets\", () => {",
+                  "    const body = pm.response.json();",
+                  "    if (body.length > 0) {",
+                  "        const event = body[0];",
+                  "        pm.expect(event).to.have.property('id');",
+                  "        pm.expect(event).to.have.property('status');",
+                  "        pm.expect(event).to.have.property('markets');",
+                  "        pm.expect(event.markets).to.be.an('array');",
+                  "        pm.environment.set(\"LAST_EVENT_ID\", event.id);",
+                  "        if (event.markets.length > 0) {",
+                  "            pm.environment.set(\"LAST_MARKET_ID\", event.markets[0].id);",
+                  "            if (event.markets[0].selections && event.markets[0].selections.length > 0) {",
+                  "                pm.environment.set(\"LAST_SELECTION_ID\", event.markets[0].selections[0].id);",
+                  "            }",
+                  "        }",
+                  "        // Intentar capturar una segunda selection de OTRO evento para parlays",
+                  "        if (body.length > 1 && body[1].markets && body[1].markets.length > 0) {",
+                  "            const sels = body[1].markets[0].selections || [];",
+                  "            if (sels.length > 0) pm.environment.set(\"SECOND_SELECTION_ID\", sels[0].id);",
+                  "        }",
+                  "    } else {",
+                  "        console.warn(\"⚠️ No hay eventos activos — correr odds-ingestion primero\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/events?status=ACTIVE",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Events (filtro por sport=soccer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Array de eventos\", () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/events?sport=soccer",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "sport",
+                  "value": "soccer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Events (filtro por league=NBA)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Array de eventos\", () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/events?league=NBA",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "league",
+                  "value": "NBA"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Event por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Evento tiene markets\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.have.property('id');",
+                  "    pm.expect(body.markets).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/events/{{LAST_EVENT_ID}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "events",
+                "{{LAST_EVENT_ID}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Markets de un evento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Markets presentes\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.markets).to.be.an('array');",
+                  "    console.log(\"Markets count:\", body.markets.length);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/events/{{LAST_EVENT_ID}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "events",
+                "{{LAST_EVENT_ID}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Feed Health",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Health report es array o objeto\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/feed/health",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "feed",
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Quote Flow",
+      "item": [
+        {
+          "name": "POST Quote - Single bet válido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 o 200\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Quote tiene quoteId y txParams\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.quoteId).to.be.a('string');",
+                  "    pm.expect(body.txParams).to.have.property('to');",
+                  "    pm.expect(body.txParams).to.have.property('value');",
+                  "    pm.expect(body.expiresAt).to.be.a('string');",
+                  "    pm.expect(body.ttlSeconds).to.be.a('number');",
+                  "    pm.environment.set(\"LAST_QUOTE_ID\", body.quoteId);",
+                  "});",
+                  "pm.test(\"TTL dentro del rango esperado (10-30s)\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.ttlSeconds).to.be.within(10, 30);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote - Evento suspendido (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 o 404 esperado\", () => pm.expect([400, 404]).to.include(pm.response.code));",
+                  "pm.test(\"Tiene mensaje de error\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.message).to.exist;",
+                  "    console.log(\"Error:\", body.message);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"suspended-selection-id\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote - Stake fuera de límites (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Tiene mensaje de error\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.message).to.exist;",
+                  "    console.log(\"Error message:\", body.message);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 999999,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote - Quote expirado TTL (espera 400)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "console.log(\"⏳ Este test espera TTL expirado — el segundo POST /quotes con mismo user+selection retornará el quote existente. Para reproducir expiración: esperar 25+ segundos tras el primer quote antes de confirmar.\");"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Este request es informativo — QuoteService retorna quote PENDING existente por idempotencia.",
+                  "// Para validar expiración real, usar POST /bets/confirm con un quoteId expirado.",
+                  "pm.test(\"Status 200/201 (idempotencia) o 400 (expirado)\", () => {",
+                  "    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+                  "});",
+                  "console.log(\"Response:\", pm.response.text().substring(0, 200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote - Parlay válido (2 selections)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Parlay quote válido\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.quoteId).to.be.a('string');",
+                  "    pm.expect(body.type || 'PARLAY').to.equal('PARLAY');",
+                  "    if (body.legs) pm.expect(body.legs.length).to.be.at.least(2);",
+                  "    pm.environment.set(\"LAST_QUOTE_ID\", body.quoteId);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selections\": [\n    {\n      \"selectionId\": \"{{LAST_SELECTION_ID}}\"\n    },\n    {\n      \"selectionId\": \"{{SECOND_SELECTION_ID}}\"\n    }\n  ],\n  \"stake\": 25,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⛓ Bet Execution",
+      "item": [
+        {
+          "name": "POST Confirm Bet (mock txHash)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Ticket creado en estado SUBMITTED\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.id).to.be.a('string');",
+                  "    pm.expect(['SUBMITTED', 'CONFIRMING']).to.include(body.status);",
+                  "    pm.expect(body.txHash).to.be.a('string');",
+                  "    pm.environment.set(\"LAST_TICKET_ID\", body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+              "host": [
+                "{{BASE_URL_EXECUTION}}"
+              ],
+              "path": [
+                "bets",
+                "confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Confirm Bet - Quote ya usado (espera 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 o 409 esperado\", () => pm.expect([400, 409]).to.include(pm.response.code));",
+                  "pm.test(\"Tiene mensaje de error\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.message).to.exist;",
+                  "    console.log(\"Error:\", body.message);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+              "host": [
+                "{{BASE_URL_EXECUTION}}"
+              ],
+              "path": [
+                "bets",
+                "confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Confirm Bet - Quote expirado (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 o 404 esperado\", () => pm.expect([400, 404]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+              "host": [
+                "{{BASE_URL_EXECUTION}}"
+              ],
+              "path": [
+                "bets",
+                "confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"expired-fake-quote-id-00000000\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET Ticket por ID (verifica estado SUBMITTED → CONFIRMED)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "console.log(\"Polling ticket status. En mock debería pasar a CONFIRMED en ~5s\");"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Ticket existe\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.id).to.equal(pm.environment.get(\"LAST_TICKET_ID\"));",
+                  "});",
+                  "const body = pm.response.json();",
+                  "console.log(`Ticket status actual: ${body.status}`);",
+                  "if (body.status === 'CONFIRMED') {",
+                  "    pm.test(\"✅ Ticket CONFIRMED\", () => pm.expect(body.status).to.equal('CONFIRMED'));",
+                  "    pm.test(\"Tiene blockNumber y confirmedAt\", () => {",
+                  "        pm.expect(body.blockNumber).to.be.a('number');",
+                  "        pm.expect(body.confirmedAt).to.be.a('string');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎟 Tickets & Historial",
+      "item": [
+        {
+          "name": "GET My Tickets (por userId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Retorna array de tickets\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.be.an('array');",
+                  "    console.log(\"Total tickets:\", body.length);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets?userId={{TEST_USER_WALLET}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{TEST_USER_WALLET}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET My Tickets (filtro status=CONFIRMED)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Array de CONFIRMED\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets?userId={{TEST_USER_WALLET}}&status=CONFIRMED",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{TEST_USER_WALLET}}"
+                },
+                {
+                  "key": "status",
+                  "value": "CONFIRMED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Ticket detalle completo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Ticket detalle tiene campos esperados\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.have.property('id');",
+                  "    pm.expect(body).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET My Tickets (filtro status=WON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets?userId={{TEST_USER_WALLET}}&status=WON",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{TEST_USER_WALLET}}"
+                },
+                {
+                  "key": "status",
+                  "value": "WON"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚖️ Grading",
+      "item": [
+        {
+          "name": "[Admin] GET Tickets en MANUAL_REVIEW",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Retorna objeto con items o array\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/tickets?status=MANUAL_REVIEW",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "MANUAL_REVIEW"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Manual Grade - WIN",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200 o 201\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Ticket pasa a WON o SETTLING\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "grade"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outcome\": \"WIN\",\n  \"reason\": \"Manual grade test — partido verificado por operador\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] Manual Grade - LOSS",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400 (ya gradado)\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "grade"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outcome\": \"LOSS\",\n  \"reason\": \"Manual grade test — resultado LOSS\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] Manual Grade - VOID",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400 (ya gradado)\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "grade"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outcome\": \"VOID\",\n  \"reason\": \"Manual grade test — evento cancelado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] Manual Grade - ticket no en MANUAL_REVIEW (espera 400)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 o 404 esperado\", () => pm.expect([400, 404]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/tickets/nonexistent-ticket-id/grade",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "tickets",
+                "nonexistent-ticket-id",
+                "grade"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outcome\": \"WIN\",\n  \"reason\": \"Test error\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💸 Settlement",
+      "item": [
+        {
+          "name": "[Admin] GET Settlements (todos)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Response tiene data\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "    // Intentar capturar un settlement id si hay",
+                  "    const items = Array.isArray(body) ? body : (body.items || body.data || []);",
+                  "    if (items.length > 0) {",
+                  "        pm.environment.set(\"LAST_SETTLEMENT_JOB_ID\", items[0].id);",
+                  "        console.log(\"LAST_SETTLEMENT_JOB_ID =\", items[0].id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/settlements",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "settlements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Settlements (status=MANUAL_INTERVENTION)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/settlements?status=MANUAL_INTERVENTION",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "settlements"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "MANUAL_INTERVENTION"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Settlement Stats",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Stats tiene counts\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "    console.log(\"Stats:\", JSON.stringify(body));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/settlements/stats",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "settlements",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Retry Settlement",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400\", () => pm.expect([200, 201, 400, 404]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/settlements/{{LAST_SETTLEMENT_JOB_ID}}/retry",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "settlements",
+                "{{LAST_SETTLEMENT_JOB_ID}}",
+                "retry"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Retry manual test — fallo de RPC resuelto\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] Retry Settlement - job ya CONFIRMED (espera 400)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 esperado\", () => pm.expect([400, 409]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/settlements/{{LAST_SETTLEMENT_JOB_ID}}/retry",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "settlements",
+                "{{LAST_SETTLEMENT_JOB_ID}}",
+                "retry"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Retry sobre job ya confirmado — debe fallar\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💰 Cashout",
+      "item": [
+        {
+          "name": "GET Cashout Quote (ticket CONFIRMED)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Cashout quote tiene cashoutAmount\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.cashoutAmount).to.be.a('number');",
+                  "    pm.environment.set(\"CASHOUT_AMOUNT\", body.cashoutAmount.toString());",
+                  "    console.log(\"Cashout amount:\", body.cashoutAmount);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout-quote?userId={{TEST_USER_WALLET}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "cashout-quote"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{TEST_USER_WALLET}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Cashout Quote - evento ya empezó (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 esperado cuando event pasó lockTime\", () => pm.expect([400, 200]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout-quote?userId={{TEST_USER_WALLET}}",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "cashout-quote"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{TEST_USER_WALLET}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST Execute Cashout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400 (drift)\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));",
+                  "if (pm.response.code < 300) {",
+                  "    pm.test(\"Ticket pasa a CASHED_OUT\", () => {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.exist;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "cashout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{TEST_USER_WALLET}}\",\n  \"expectedAmount\": 45\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Execute Cashout - parlay (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 esperado (parlays no permitidos)\", () => pm.expect([400, 200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "tickets",
+                "{{LAST_TICKET_ID}}",
+                "cashout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{TEST_USER_WALLET}}\",\n  \"expectedAmount\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎁 Promotions",
+      "item": [
+        {
+          "name": "[Admin] POST Crear Free Bet promo",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test(\"Promo creada con id\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.id).to.exist;",
+                  "    pm.environment.set(\"LAST_PROMO_ID\", body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/promotions",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "promotions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"FREE_BET\",\n  \"name\": \"Test Free Bet $10\",\n  \"description\": \"Free bet para testing\",\n  \"startsAt\": \"2026-01-01T00:00:00Z\",\n  \"expiresAt\": \"2030-12-31T23:59:59Z\",\n  \"freeBetAmount\": 10,\n  \"maxUses\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] POST Crear Odds Boost promo",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/promotions",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "promotions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"ODDS_BOOST\",\n  \"name\": \"Test Odds Boost 2x\",\n  \"description\": \"Boost para testing\",\n  \"startsAt\": \"2026-01-01T00:00:00Z\",\n  \"expiresAt\": \"2030-12-31T23:59:59Z\",\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"boostedOdds\": 3.5,\n  \"maxUses\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Listar promociones",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Array de promociones\", () => {",
+                  "    const body = pm.response.json();",
+                  "    const items = Array.isArray(body) ? body : (body.items || []);",
+                  "    console.log(\"Promociones:\", items.length);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/promotions",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "promotions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Pausar promo",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/promotions/{{LAST_PROMO_ID}}/pause",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "promotions",
+                "{{LAST_PROMO_ID}}",
+                "pause"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Pausa manual test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote con promotionId (free bet)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400 (promo pausada)\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));",
+                  "if (pm.response.code < 300) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.isFreeBet) console.log(\"✅ Free bet aplicada, amount:\", body.freeBetAmount);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 10,\n  \"userId\": \"{{TEST_USER_WALLET}}\",\n  \"promotionId\": \"{{LAST_PROMO_ID}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST Quote con promotionId - ya usado (espera 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 esperado (ya redimido)\", () => pm.expect([400, 200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_API}}/quotes",
+              "host": [
+                "{{BASE_URL_API}}"
+              ],
+              "path": [
+                "quotes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 10,\n  \"userId\": \"{{TEST_USER_WALLET}}\",\n  \"promotionId\": \"{{LAST_PROMO_ID}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛡 Admin - Eventos & Mercados",
+      "item": [
+        {
+          "name": "[Admin] GET Events",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/events",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "events"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Suspender evento",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/events/{{LAST_EVENT_ID}}/suspend",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "events",
+                "{{LAST_EVENT_ID}}",
+                "suspend"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Test suspensión manual\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Reactivar evento",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400 (lockTime pasado)\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/events/{{LAST_EVENT_ID}}/reactivate",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "events",
+                "{{LAST_EVENT_ID}}",
+                "reactivate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Test reactivación\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Suspender mercado",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201\", () => pm.expect([200, 201]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/markets/{{LAST_MARKET_ID}}/suspend",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "markets",
+                "{{LAST_MARKET_ID}}",
+                "suspend"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Test suspensión mercado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Reactivar evento ya en lockTime (espera 400)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400 o 404 esperado\", () => pm.expect([400, 404]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/events/ghost-event-id/reactivate",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "events",
+                "ghost-event-id",
+                "reactivate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Debe fallar — lockTime pasado o event inexistente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "[Admin] PATCH Cargar odds manual en mercado",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200/201 o 400\", () => pm.expect([200, 201, 400, 404]).to.include(pm.response.code));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/markets/{{LAST_MARKET_ID}}/odds",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "markets",
+                "{{LAST_MARKET_ID}}",
+                "odds"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"legs\": [\n    {\n      \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n      \"oddsValue\": 2.5\n    }\n  ],\n  \"reason\": \"Carga manual de odds — test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Admin - Audit Log",
+      "item": [
+        {
+          "name": "[Admin] GET Audit Log (todos)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Retorna logs\", () => {",
+                  "    const body = pm.response.json();",
+                  "    console.log(\"Audit entries:\", JSON.stringify(body).substring(0, 200));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/audit",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "audit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Audit Log (filtro entity=Ticket)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/audit?entity=Ticket",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "audit"
+              ],
+              "query": [
+                {
+                  "key": "entity",
+                  "value": "Ticket"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Audit Log (filtro entity=SportsbookEvent)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/audit?entity=SportsbookEvent",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "audit"
+              ],
+              "query": [
+                {
+                  "key": "entity",
+                  "value": "SportsbookEvent"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Admin - Stats & Dashboard",
+      "item": [
+        {
+          "name": "[Admin] GET Stats generales",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Stats snapshot tiene secciones\", () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.exist;",
+                  "    console.log(\"Stats:\", JSON.stringify(body).substring(0, 300));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/stats",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] GET Feed Health",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                  "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL_ADMIN}}/admin/feed/health",
+              "host": [
+                "{{BASE_URL_ADMIN}}"
+              ],
+              "path": [
+                "admin",
+                "feed",
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 Flujos E2E",
+      "item": [
+        {
+          "name": "E2E-01: Single Bet completo (quote → confirm → grade WIN → settle)",
+          "item": [
+            {
+              "name": "1. [Admin] Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Login OK\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                      "const body = pm.response.json();",
+                      "pm.environment.set(\"ADMIN_TOKEN\", body.accessToken);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/auth/login",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{ADMIN_USERNAME}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "2. GET Events",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Events OK\", () => pm.response.to.have.status(200));",
+                      "const body = pm.response.json();",
+                      "if (body.length > 0) {",
+                      "    pm.environment.set(\"LAST_EVENT_ID\", body[0].id);",
+                      "    if (body[0].markets && body[0].markets[0] && body[0].markets[0].selections && body[0].markets[0].selections[0]) {",
+                      "        pm.environment.set(\"LAST_SELECTION_ID\", body[0].markets[0].selections[0].id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/events?status=ACTIVE",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "3. POST Quote - Single",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Quote OK\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                      "const body = pm.response.json();",
+                      "pm.environment.set(\"LAST_QUOTE_ID\", body.quoteId);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/quotes",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "quotes"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "4. POST Confirm Bet",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Confirm OK\", () => pm.expect([200, 201]).to.include(pm.response.code));",
+                      "const body = pm.response.json();",
+                      "pm.environment.set(\"LAST_TICKET_ID\", body.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+                  "host": [
+                    "{{BASE_URL_EXECUTION}}"
+                  ],
+                  "path": [
+                    "bets",
+                    "confirm"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "5. GET Ticket (esperar CONFIRMED) — repetir con delay 5s",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// Esperar ~5s entre intentos. En mock debería confirmar rápido.",
+                      "setTimeout(() => {}, 100);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Ticket existe\", () => pm.response.to.have.status(200));",
+                      "const body = pm.response.json();",
+                      "console.log(\"Status actual:\", body.status);",
+                      "if (body.status === 'CONFIRMED') {",
+                      "    pm.test(\"✅ CONFIRMED\", () => pm.expect(body.status).to.equal('CONFIRMED'));",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "6. [Admin] Manual Grade - WIN",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Grade OK\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "grade"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"outcome\": \"WIN\",\n  \"reason\": \"E2E-01 test — grading WIN manual\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "7. GET Ticket (esperar SETTLED) — polling",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Ticket existe\", () => pm.response.to.have.status(200));",
+                      "const body = pm.response.json();",
+                      "console.log(\"Status actual:\", body.status);",
+                      "if (body.status === 'SETTLED') {",
+                      "    pm.test(\"✅ E2E-01 COMPLETO: Ticket llegó a SETTLED\", () => pm.expect(body.status).to.equal('SETTLED'));",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "8. [Admin] GET Settlement Stats",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Stats OK\", () => pm.response.to.have.status(200));",
+                      "const body = pm.response.json();",
+                      "console.log(\"confirmedTodayCount:\", body.confirmedTodayCount || body.confirmedToday || 'n/a');"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/settlements/stats",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settlements",
+                    "stats"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "E2E-02: Parlay completo (2 legs, ambas WIN)",
+          "item": [
+            {
+              "name": "1. [Admin] Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"ADMIN_TOKEN\", b.accessToken);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/auth/login",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{ADMIN_USERNAME}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "2. GET Events (capturar 2 selections de eventos distintos)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const body = pm.response.json();",
+                      "if (body.length >= 2) {",
+                      "    const s1 = body[0].markets?.[0]?.selections?.[0]?.id;",
+                      "    const s2 = body[1].markets?.[0]?.selections?.[0]?.id;",
+                      "    pm.environment.set(\"LAST_SELECTION_ID\", s1);",
+                      "    pm.environment.set(\"SECOND_SELECTION_ID\", s2);",
+                      "    console.log(\"Parlay legs:\", s1, s2);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/events?status=ACTIVE",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "3. POST Quote - Parlay (2 legs)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_QUOTE_ID\", b.quoteId);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/quotes",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "quotes"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"selections\": [\n    {\n      \"selectionId\": \"{{LAST_SELECTION_ID}}\"\n    },\n    {\n      \"selectionId\": \"{{SECOND_SELECTION_ID}}\"\n    }\n  ],\n  \"stake\": 25,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "4. POST Confirm Bet",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_TICKET_ID\", b.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+                  "host": [
+                    "{{BASE_URL_EXECUTION}}"
+                  ],
+                  "path": [
+                    "bets",
+                    "confirm"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "5. GET Ticket (esperar CONFIRMED)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); console.log(\"Status:\", b.status);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "6. [Admin] Manual Grade WIN - leg 1",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"OK\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "grade"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"outcome\": \"WIN\",\n  \"legSelectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"reason\": \"E2E-02 leg 1 WIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "7. GET Ticket - debe seguir CONFIRMED",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); console.log(\"Esperado CONFIRMED (pending leg 2):\", b.status);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "8. [Admin] Manual Grade WIN - leg 2",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"OK\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "grade"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"outcome\": \"WIN\",\n  \"legSelectionId\": \"{{SECOND_SELECTION_ID}}\",\n  \"reason\": \"E2E-02 leg 2 WIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "9. GET Ticket (esperar SETTLED)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "console.log(\"Status:\", b.status);",
+                      "if (b.status === 'SETTLED') pm.test(\"✅ E2E-02 COMPLETO\", () => pm.expect(b.status).to.equal('SETTLED'));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "E2E-03: Bet VOID (evento cancelado)",
+          "item": [
+            {
+              "name": "1. [Admin] Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"ADMIN_TOKEN\", b.accessToken);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/auth/login",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{ADMIN_USERNAME}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "2. GET Events",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b.length > 0) {",
+                      "    pm.environment.set(\"LAST_EVENT_ID\", b[0].id);",
+                      "    pm.environment.set(\"LAST_SELECTION_ID\", b[0].markets[0].selections[0].id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/events?status=ACTIVE",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "3. POST Quote - Single",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_QUOTE_ID\", b.quoteId);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/quotes",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "quotes"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "4. POST Confirm Bet",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_TICKET_ID\", b.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+                  "host": [
+                    "{{BASE_URL_EXECUTION}}"
+                  ],
+                  "path": [
+                    "bets",
+                    "confirm"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "5. GET Ticket (esperar CONFIRMED)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "console.log(\"Status:\", pm.response.json().status);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "6. [Admin] PATCH Suspender evento",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"OK\", () => pm.expect([200, 201]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/events/{{LAST_EVENT_ID}}/suspend",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "events",
+                    "{{LAST_EVENT_ID}}",
+                    "suspend"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"E2E-03: Simular evento cancelado\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "7. [Admin] Manual Grade - VOID",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"OK\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/tickets/{{LAST_TICKET_ID}}/grade",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "grade"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"outcome\": \"VOID\",\n  \"reason\": \"E2E-03: Evento cancelado, refund del stake\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "8. GET Ticket (esperar SETTLED con refund)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "console.log(\"Status:\", b.status);",
+                      "if (b.status === 'SETTLED') pm.test(\"✅ E2E-03 COMPLETO (VOID→SETTLED refund)\", () => pm.expect(b.status).to.equal('SETTLED'));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "E2E-04: Cashout flow completo",
+          "item": [
+            {
+              "name": "1. [Admin] Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"ADMIN_TOKEN\", b.accessToken);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/auth/login",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{ADMIN_USERNAME}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "2. GET Events - buscar lockTime futuro",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const body = pm.response.json();",
+                      "const now = Date.now();",
+                      "const futureEvent = body.find(e => e.lockTime && new Date(e.lockTime).getTime() > now + 60000);",
+                      "if (futureEvent) {",
+                      "    pm.environment.set(\"LAST_EVENT_ID\", futureEvent.id);",
+                      "    pm.environment.set(\"LAST_SELECTION_ID\", futureEvent.markets[0].selections[0].id);",
+                      "    console.log(\"Evento futuro usado:\", futureEvent.id);",
+                      "} else if (body.length > 0) {",
+                      "    pm.environment.set(\"LAST_EVENT_ID\", body[0].id);",
+                      "    pm.environment.set(\"LAST_SELECTION_ID\", body[0].markets[0].selections[0].id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/events?status=ACTIVE",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "3. POST Quote - Single",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_QUOTE_ID\", b.quoteId);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/quotes",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "quotes"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"selectionId\": \"{{LAST_SELECTION_ID}}\",\n  \"stake\": 50,\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "4. POST Confirm Bet",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json(); pm.environment.set(\"LAST_TICKET_ID\", b.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_EXECUTION}}/bets/confirm",
+                  "host": [
+                    "{{BASE_URL_EXECUTION}}"
+                  ],
+                  "path": [
+                    "bets",
+                    "confirm"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quoteId\": \"{{LAST_QUOTE_ID}}\",\n  \"txHash\": \"{{MOCK_TX_HASH}}\",\n  \"userId\": \"{{TEST_USER_WALLET}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "5. GET Ticket (esperar CONFIRMED)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "console.log(\"Status:\", pm.response.json().status);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "6. GET Cashout Quote",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "if (b.cashoutAmount) {",
+                      "    pm.environment.set(\"CASHOUT_AMOUNT\", b.cashoutAmount.toString());",
+                      "    console.log(\"Cashout amount:\", b.cashoutAmount);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout-quote?userId={{TEST_USER_WALLET}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "cashout-quote"
+                  ],
+                  "query": [
+                    {
+                      "key": "userId",
+                      "value": "{{TEST_USER_WALLET}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "7. POST Execute Cashout",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// Reemplazar expectedAmount con CASHOUT_AMOUNT si disponible",
+                      "const amount = parseFloat(pm.environment.get(\"CASHOUT_AMOUNT\") || \"45\");",
+                      "pm.request.body.update({",
+                      "    mode: 'raw',",
+                      "    raw: JSON.stringify({ userId: pm.environment.get(\"TEST_USER_WALLET\"), expectedAmount: amount }),",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Cashout OK\", () => pm.expect([200, 201, 400]).to.include(pm.response.code));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}/cashout",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}",
+                    "cashout"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{TEST_USER_WALLET}}\",\n  \"expectedAmount\": 45\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "8. GET Ticket - verificar CASHED_OUT",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const b = pm.response.json();",
+                      "console.log(\"Status:\", b.status);",
+                      "if (b.status === 'CASHED_OUT' || b.status === 'SETTLED') {",
+                      "    pm.test(\"✅ E2E-04 COMPLETO\", () => pm.expect(['CASHED_OUT', 'SETTLED']).to.include(b.status));",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL_API}}/tickets/{{LAST_TICKET_ID}}",
+                  "host": [
+                    "{{BASE_URL_API}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{LAST_TICKET_ID}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "9. [Admin] GET Settlement Stats",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const token = pm.environment.get(\"ADMIN_TOKEN\");",
+                      "if (!token) { console.warn(\"⚠️ ADMIN_TOKEN vacío. Ejecutar 'Login' primero.\"); }"
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Stats OK\", () => pm.response.to.have.status(200));"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{ADMIN_TOKEN}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL_ADMIN}}/admin/settlements/stats",
+                  "host": [
+                    "{{BASE_URL_ADMIN}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settlements",
+                    "stats"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -46,6 +46,13 @@ let SportsService = SportsService_1 = class SportsService {
         this.handleNhlStandingsSync().catch(e => this.logger.error(e));
         this.handleLibertadoresSync().catch(e => this.logger.error(e));
         this.handleLibertadoresStandingsSync().catch(e => this.logger.error(e));
+        this.handleMlbSync().catch(e => this.logger.error(e));
+        this.handleNflSync().catch(e => this.logger.error(e));
+        this.handleUclSync().catch(e => this.logger.error(e));
+        this.handlePremierLeagueSync().catch(e => this.logger.error(e));
+        this.handleMlbStandingsSync().catch(e => this.logger.error(e));
+        this.handleUclStandingsSync().catch(e => this.logger.error(e));
+        this.handleEplStandingsSync().catch(e => this.logger.error(e));
         this.syncLeague('soccer', 'conmebol.libertadores', 'LIBERTADORES', ['2026']).catch(e => this.logger.error(e));
     }
     async findAll(league) {
@@ -99,6 +106,18 @@ let SportsService = SportsService_1 = class SportsService {
     }
     async handleNhlSync() {
         await this.syncLeague('hockey', 'nhl', 'NHL');
+    }
+    async handleMlbSync() {
+        await this.syncLeague('baseball', 'mlb', 'MLB');
+    }
+    async handleNflSync() {
+        await this.syncLeague('football', 'nfl', 'NFL');
+    }
+    async handleUclSync() {
+        await this.syncLeague('soccer', 'uefa.champions', 'UCL');
+    }
+    async handlePremierLeagueSync() {
+        await this.syncLeague('soccer', 'eng.1', 'EPL');
     }
     async syncLeague(sport, espnLeague, dbLeague, customDates) {
         try {
@@ -232,6 +251,15 @@ let SportsService = SportsService_1 = class SportsService {
     async handleNhlStandingsSync() {
         await this.syncStandings('hockey', 'nhl', 'NHL');
     }
+    async handleMlbStandingsSync() {
+        await this.syncStandings('baseball', 'mlb', 'MLB');
+    }
+    async handleUclStandingsSync() {
+        await this.syncStandings('soccer', 'uefa.champions', 'UCL');
+    }
+    async handleEplStandingsSync() {
+        await this.syncStandings('soccer', 'eng.1', 'EPL');
+    }
     async syncStandings(sport, espnLeague, dbLeague) {
         try {
             const url = `https://site.api.espn.com/apis/v2/sports/${sport}/${espnLeague}/standings`;
@@ -334,6 +362,30 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleMlbSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleNflSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleUclSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handlePremierLeagueSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
 ], SportsService.prototype, "handleNbaStandingsSync", null);
 __decorate([
     (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
@@ -353,6 +405,24 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SportsService.prototype, "handleNhlStandingsSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleMlbStandingsSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleUclStandingsSync", null);
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_12_HOURS),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SportsService.prototype, "handleEplStandingsSync", null);
 exports.SportsService = SportsService = SportsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(3, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),

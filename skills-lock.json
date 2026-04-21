@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "53e960930ce5af70af8d57539ee5682feeeace5f7befa8035bfe71e33e3cb4c0"
     },
+    "code-documenter": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "computedHash": "60187087195b064d3be947aba29b0240eab0413b6c9172870618d34929bb28bb"
+    },
     "nodejs-backend-patterns": {
       "source": "wshobson/agents",
       "sourceType": "github",

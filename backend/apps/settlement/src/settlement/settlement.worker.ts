@@ -1,3 +1,11 @@
+/**
+ * @module SettlementWorker
+ * @description Worker BullMQ que procesa jobs de liquidación de pagos.
+ *
+ * Escucha la cola `settlement` y procesa dos tipos de jobs:
+ * - `execute-settlement`: Inicia la ejecución de un pago on-chain.
+ * - `verify-settlement-tx`: Verifica la confirmación de una transacción de pago.
+ */
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { SettlementService } from './settlement.service';

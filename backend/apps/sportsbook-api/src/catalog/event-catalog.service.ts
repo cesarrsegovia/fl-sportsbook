@@ -1,13 +1,47 @@
+/**
+ * @module EventCatalogService
+ * @description Servicio responsable de sincronizar y mantener el catálogo de eventos
+ * del sportsbook. Convierte datos de partidos deportivos en eventos apostables con
+ * mercados y selecciones, y gestiona la frescura del feed de datos.
+ */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 
+/**
+ * Servicio de catálogo de eventos del sportsbook.
+ *
+ * Responsabilidades principales:
+ * - Sincronizar partidos deportivos con eventos de apuestas.
+ * - Crear/actualizar mercados (MATCH_WINNER, BOTH_TEAMS_TO_SCORE, etc.) y selecciones.
+ * - Suspender automáticamente eventos que superaron su lockTime.
+ * - Detectar feeds obsoletos y suspender eventos afectados.
+ *
+ * @example
+ * ```typescript
+ * // Sincronizar un partido con el catálogo
+ * await eventCatalogService.syncEventFromMatch('match-uuid-123');
+ * ```
+ */
 @Injectable()
 export class EventCatalogService {
   private readonly logger = new Logger(EventCatalogService.name);
 
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Sincroniza un partido deportivo con su evento correspondiente en el sportsbook.
+   *
+   * Realiza las siguientes operaciones:
+   * 1. Busca el partido por ID e incluye las cuotas más recientes.
+   * 2. Calcula el `lockTime` (cierre de apuestas) basado en `EVENT_LOCK_WINDOW_MINUTES`.
+   * 3. Determina el estado del evento (ACTIVE, SUSPENDED, FINISHED).
+   * 4. Crea o actualiza el evento, mercado MATCH_WINNER y sus selecciones.
+   * 5. Para fútbol: crea mercados adicionales (BTTS, Medio Tiempo, Doble Chance).
+   *
+   * @param matchId - ID del partido a sincronizar
+   * @throws Error si la operación de base de datos falla (capturado internamente)
+   */
   async syncEventFromMatch(matchId: string): Promise<void> {
     try {
       const match = await this.prisma.match.findUnique({
@@ -39,8 +73,7 @@ export class EventCatalogService {
         create: { matchId, status: eventStatus, lockTime, feedFreshAt: now },
       });
 
-      const marketStatus =
-        eventStatus === 'ACTIVE' ? 'ACTIVE' : 'SUSPENDED';
+      const marketStatus = eventStatus === 'ACTIVE' ? 'ACTIVE' : 'SUSPENDED';
 
       let market = await this.prisma.market.findFirst({
         where: { eventId: sbEvent.id, type: 'MATCH_WINNER' },
@@ -86,7 +119,7 @@ export class EventCatalogService {
         }
       }
 
-      // Additional markets (Fase 4) — soccer only, odds null → market SUSPENDED
+      // Mercados adicionales (Fase 4) — solo fútbol, cuotas null → mercado SUSPENDED
       if (match.sport === 'soccer') {
         await this.upsertMarketWithSelections(
           sbEvent.id,
@@ -96,30 +129,33 @@ export class EventCatalogService {
             { name: 'no', oddsValue: null },
           ],
         );
-        await this.upsertMarketWithSelections(
-          sbEvent.id,
-          'HALF_TIME_RESULT',
-          [
-            { name: 'home', oddsValue: null },
-            { name: 'draw', oddsValue: null },
-            { name: 'away', oddsValue: null },
-          ],
-        );
-        await this.upsertMarketWithSelections(
-          sbEvent.id,
-          'DOUBLE_CHANCE',
-          [
-            { name: '1X', oddsValue: null },
-            { name: 'X2', oddsValue: null },
-            { name: '12', oddsValue: null },
-          ],
-        );
+        await this.upsertMarketWithSelections(sbEvent.id, 'HALF_TIME_RESULT', [
+          { name: 'home', oddsValue: null },
+          { name: 'draw', oddsValue: null },
+          { name: 'away', oddsValue: null },
+        ]);
+        await this.upsertMarketWithSelections(sbEvent.id, 'DOUBLE_CHANCE', [
+          { name: '1X', oddsValue: null },
+          { name: 'X2', oddsValue: null },
+          { name: '12', oddsValue: null },
+        ]);
       }
     } catch (err) {
       this.logger.error(`syncEventFromMatch(${matchId}) failed:`, err.message);
     }
   }
 
+  /**
+   * Crea o actualiza un mercado con sus selecciones asociadas.
+   *
+   * No sobreescribe cuotas existentes establecidas por el administrador;
+   * solo crea selecciones faltantes. El mercado se activa automáticamente
+   * si todas sus selecciones tienen cuotas válidas.
+   *
+   * @param eventId - ID del evento al que pertenece el mercado
+   * @param type - Tipo de mercado a crear/actualizar
+   * @param defs - Definiciones de selecciones con nombre y valor de cuota
+   */
   private async upsertMarketWithSelections(
     eventId: string,
     type:
@@ -132,7 +168,7 @@ export class EventCatalogService {
     let market = await this.prisma.market.findFirst({
       where: { eventId, type },
     });
-    // Market status: ACTIVE only if all selections already have odds; otherwise SUSPENDED
+    // Estado del mercado: ACTIVE solo si todas las selecciones ya tienen cuotas; sino SUSPENDED
     const allHaveOdds = defs.every((d) => d.oddsValue != null);
 
     if (!market) {
@@ -154,10 +190,18 @@ export class EventCatalogService {
           data: { marketId: market.id, name, oddsValue: oddsValue ?? null },
         });
       }
-      // Do NOT overwrite existing odds set by admin; only create missing selections
+      // No sobreescribir cuotas existentes establecidas por el admin; solo crear selecciones faltantes
     }
   }
 
+  /**
+   * Tarea cron que suspende eventos cuyo lockTime ya pasó.
+   *
+   * Se ejecuta cada 30 segundos. Busca eventos ACTIVE con lockTime anterior
+   * al momento actual y los marca como SUSPENDED junto con sus mercados activos.
+   *
+   * @cron `* /30 * * * * *` (cada 30 segundos)
+   */
   @Cron('*/30 * * * * *')
   async suspendStaleEvents(): Promise<void> {
     try {
@@ -184,6 +228,14 @@ export class EventCatalogService {
     }
   }
 
+  /**
+   * Tarea cron que verifica la frescura del feed de datos externos.
+   *
+   * Se ejecuta cada 5 minutos. Busca eventos ACTIVE cuyo `feedFreshAt`
+   * sea anterior a 3 minutos atrás y los suspende individualmente con log de advertencia.
+   *
+   * @cron `0 * /5 * * * *` (cada 5 minutos)
+   */
   @Cron('0 */5 * * * *')
   async checkFeedFreshness(): Promise<void> {
     try {

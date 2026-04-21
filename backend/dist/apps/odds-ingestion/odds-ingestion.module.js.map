@@ -1,0 +1,1 @@
+{"version":3,"file":"odds-ingestion.module.js","sourceRoot":"","sources":["../../../apps/odds-ingestion/src/odds-ingestion.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,2DAAuD;AAKhD,IAAM,mBAAmB,GAAzB,MAAM,mBAAmB;CAAG,CAAA;AAAtB,kDAAmB;8BAAnB,mBAAmB;IAH/B,IAAA,eAAM,EAAC;QACN,WAAW,EAAE,CAAC,oCAAgB,CAAC;KAChC,CAAC;GACW,mBAAmB,CAAG"}

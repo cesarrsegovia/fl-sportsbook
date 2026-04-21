@@ -9,4 +9,4 @@ import { EventCatalogModule } from '../catalog/event-catalog.module';
   exports: [SportsService],
   controllers: [SportsController],
 })
-export class SportsModule { }
+export class SportsModule {}

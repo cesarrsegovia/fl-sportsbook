@@ -1,3 +1,19 @@
+/**
+ * @module SettlementService
+ * @description Servicio responsable de ejecutar y verificar los pagos de liquidación
+ * a los usuarios ganadores. Implementa protección contra pagos duplicados mediante
+ * claves de idempotencia y un sistema de reintentos con intervención manual como fallback.
+ *
+ * Flujo de liquidación:
+ * 1. Recibe un job pendiente con monto y wallet destino.
+ * 2. Verifica idempotencia para prevenir pagos duplicados.
+ * 3. Envía la transacción on-chain (o mock en desarrollo).
+ * 4. Encola verificación de confirmación con delay.
+ * 5. Marca como CONFIRMED cuando la tx se mina exitosamente.
+ * 6. Después de MAX_ATTEMPTS fallidos → MANUAL_INTERVENTION.
+ *
+ * Modo mock: cuando `CHAIN_RPC_URL` es 'mock', simula transacciones exitosas.
+ */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -186,10 +202,7 @@ export class SettlementService {
     amount: number;
     idempotencyKey: string;
   }): Promise<string> {
-    if (
-      !process.env.CHAIN_RPC_URL ||
-      process.env.CHAIN_RPC_URL === 'mock'
-    ) {
+    if (!process.env.CHAIN_RPC_URL || process.env.CHAIN_RPC_URL === 'mock') {
       const fakeTxHash = `0x${params.idempotencyKey.substring(0, 62)}`;
       this.logger.log(
         `[MOCK] Payout tx: ${fakeTxHash} → ${params.toWallet} (${params.amount})`,
@@ -216,10 +229,7 @@ export class SettlementService {
   }
 
   private async getTransactionReceipt(txHash: string) {
-    if (
-      !process.env.CHAIN_RPC_URL ||
-      process.env.CHAIN_RPC_URL === 'mock'
-    ) {
+    if (!process.env.CHAIN_RPC_URL || process.env.CHAIN_RPC_URL === 'mock') {
       return { status: 1, blockNumber: 99999 };
     }
 

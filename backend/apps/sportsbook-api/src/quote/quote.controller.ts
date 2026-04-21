@@ -9,6 +9,14 @@ import { Throttle } from '@nestjs/throttler';
 import { QuoteService } from './quote.service';
 import { RequestQuoteDto } from './dto/request-quote.dto';
 
+/**
+ * Controlador de cotizaciones de apuestas.
+ *
+ * Expone el endpoint `POST /quotes` para solicitar cotizaciones
+ * de apuestas simples o combinadas (parlay).
+ *
+ * Rate limiting: máximo 10 solicitudes por minuto por IP.
+ */
 @Controller('quotes')
 export class QuoteController {
   constructor(private readonly quoteService: QuoteService) {}

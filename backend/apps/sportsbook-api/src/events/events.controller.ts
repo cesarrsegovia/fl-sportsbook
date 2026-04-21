@@ -7,6 +7,13 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 
+/**
+ * Controlador de eventos de apuestas del sportsbook.
+ *
+ * Expone endpoints para consultar eventos disponibles con sus mercados y selecciones:
+ * - `GET /events` — Lista de eventos con filtros opcionales (sport, league, status).
+ * - `GET /events/:eventId` — Detalle de un evento específico con cuotas.
+ */
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}

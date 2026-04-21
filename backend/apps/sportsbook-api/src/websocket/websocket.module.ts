@@ -6,4 +6,4 @@ import { OddsGateway } from './odds/odds.gateway';
   providers: [OddsGateway],
   exports: [OddsGateway],
 })
-export class WebsocketModule { }
+export class WebsocketModule {}

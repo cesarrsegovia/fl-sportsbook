@@ -23,6 +23,8 @@ const quote_module_1 = require("./quote/quote.module");
 const events_module_1 = require("./events/events.module");
 const tickets_module_1 = require("./tickets/tickets.module");
 const internal_controller_1 = require("./internal/internal.controller");
+const promotion_module_1 = require("./promotions/promotion.module");
+const cashout_module_1 = require("./cashout/cashout.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -53,9 +55,11 @@ exports.AppModule = AppModule = __decorate([
             websocket_module_1.WebsocketModule,
             sports_module_1.SportsModule,
             odds_module_1.OddsModule,
+            promotion_module_1.PromotionModule,
             quote_module_1.QuoteModule,
             events_module_1.EventsModule,
             tickets_module_1.TicketsModule,
+            cashout_module_1.CashoutModule,
         ],
         controllers: [app_controller_1.AppController, internal_controller_1.InternalController],
         providers: [

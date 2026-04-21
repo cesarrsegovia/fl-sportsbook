@@ -1,3 +1,20 @@
+/**
+ * @module AdminTicketsService
+ * @description Servicio de gestión administrativa de tickets de apuestas.
+ *
+ * Permite a los operadores:
+ * - Consultar todos los tickets con filtros avanzados (estado, usuario, liga, fechas).
+ * - Ver el detalle completo de un ticket con toda la cadena relacional.
+ * - Calificar manualmente tickets en estado MANUAL_REVIEW.
+ * - Anular (void) tickets confirmados que aún no fueron calificados.
+ *
+ * Calificación manual:
+ * - Crea un GradingRecord con fuente `MANUAL_OPERATOR`.
+ * - Para outcomes WIN/REFUND, genera automáticamente un SettlementJob.
+ * - Utiliza clave de idempotencia SHA-256 para evitar pagos duplicados.
+ *
+ * Todas las acciones se registran en el log de auditoría.
+ */
 import {
   BadRequestException,
   ConflictException,
@@ -48,7 +65,8 @@ export class AdminTicketsService {
     if (query.dateFrom || query.dateTo) {
       where.createdAt = {};
       if (query.dateFrom) where.createdAt.gte = new Date(query.dateFrom);
-      if (query.dateTo) where.createdAt.lte = new Date(query.dateTo + 'T23:59:59Z');
+      if (query.dateTo)
+        where.createdAt.lte = new Date(query.dateTo + 'T23:59:59Z');
     }
 
     if (query.league) {

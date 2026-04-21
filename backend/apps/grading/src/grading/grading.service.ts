@@ -1,3 +1,18 @@
+/**
+ * @module GradingService
+ * @description Servicio principal de calificación (grading) de apuestas.
+ *
+ * Determina el resultado de cada apuesta (WIN, LOSS, VOID, REFUND, MANUAL_REVIEW)
+ * basándose en los resultados oficiales obtenidos de la API de ESPN.
+ *
+ * Funcionalidades principales:
+ * - Calificación de apuestas simples (singles) y combinadas (parlays).
+ * - Soporte para múltiples tipos de mercado: MATCH_WINNER, OVER_UNDER,
+ *   BOTH_TEAMS_TO_SCORE, DOUBLE_CHANCE, HALF_TIME_RESULT.
+ * - Creación automática de trabajos de liquidación para pagos.
+ * - Idempotencia: previene calificaciones duplicadas por ticket.
+ * - Broadcast de actualizaciones de estado vía WebSocket.
+ */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -6,6 +21,11 @@ import { PrismaService } from '@sportsbook/prisma';
 import * as crypto from 'crypto';
 import { firstValueFrom } from 'rxjs';
 
+/**
+ * Resultado oficial de un evento deportivo obtenido de ESPN.
+ *
+ * @interface OfficialResult
+ */
 interface OfficialResult {
   externalEventId: string;
   homeScore: number | null;
@@ -260,9 +280,7 @@ export class GradingService {
 
     let finalOdds = ticket.quote.oddsAtQuote;
     if (finalOutcome === 'WIN') {
-      const active = ticket.parlayLegs.filter(
-        (l) => l.outcome === 'WIN',
-      );
+      const active = ticket.parlayLegs.filter((l) => l.outcome === 'WIN');
       finalOdds = active.reduce((acc, l) => acc * l.oddsValue, 1);
     }
 
@@ -465,7 +483,9 @@ export class GradingService {
       const state: string = espnEvent.status?.type?.state;
 
       if (!completed || state !== 'post') {
-        this.logger.warn(`Match ${match.externalId} not yet in completed state`);
+        this.logger.warn(
+          `Match ${match.externalId} not yet in completed state`,
+        );
         return null;
       }
 

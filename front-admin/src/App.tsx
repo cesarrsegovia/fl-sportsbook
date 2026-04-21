@@ -1,3 +1,12 @@
+/**
+ * @module App
+ * @description Componente raíz de la aplicación de Administración.
+ * 
+ * Gestiona:
+ * - El enrutamiento y cambio de vistas (`AdminLayout`).
+ * - La conexión de WebSockets para recibir actualizaciones en tiempo real (`TICKET_UPDATE`).
+ * - Polling periódico de las estadísticas generales (cada 30s).
+ */
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useAdminStore } from './store/useAdminStore';

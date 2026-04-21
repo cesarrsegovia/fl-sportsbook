@@ -1,3 +1,9 @@
+/**
+ * Controlador de ejecución de apuestas.
+ *
+ * Endpoints montados bajo `/bets`:
+ * - `POST /bets/confirm` — Confirmar una apuesta con hash de transacción blockchain.
+ */
 import {
   Controller,
   Post,

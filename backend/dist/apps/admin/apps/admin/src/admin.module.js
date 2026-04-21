@@ -22,6 +22,7 @@ const tickets_module_js_1 = require("./tickets/tickets.module.js");
 const settlements_module_js_1 = require("./settlements/settlements.module.js");
 const stats_module_js_1 = require("./stats/stats.module.js");
 const alerts_module_js_1 = require("./alerts/alerts.module.js");
+const promotions_module_js_1 = require("./promotions/promotions.module.js");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
@@ -38,6 +39,7 @@ exports.AdminModule = AdminModule = __decorate([
             settlements_module_js_1.AdminSettlementsModule,
             stats_module_js_1.StatsModule,
             alerts_module_js_1.AlertsModule,
+            promotions_module_js_1.AdminPromotionsModule,
         ],
         controllers: [audit_controller_js_1.AuditController, health_controller_js_1.HealthController],
         providers: [

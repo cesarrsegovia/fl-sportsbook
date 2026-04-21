@@ -1,3 +1,9 @@
+/**
+ * Controlador del registro de auditoría.
+ *
+ * Expone `GET /admin/audit` con filtros opcionales por entidad, entityId,
+ * actor y rango de fechas. Soporta paginación.
+ */
 import { Controller, Get, Query } from '@nestjs/common';
 import { PrismaService } from '@sportsbook/prisma';
 

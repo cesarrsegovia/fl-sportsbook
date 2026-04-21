@@ -1,4 +1,21 @@
-import { Body, Controller, Get, Param, Patch, Query, Req } from '@nestjs/common';
+/**
+ * Controlador de gestión administrativa de tickets.
+ *
+ * Endpoints montados bajo `/admin/tickets`:
+ * - `GET /admin/tickets` — Listar tickets con filtros (status, userId, league, fechas, paginación).
+ * - `GET /admin/tickets/:ticketId` — Detalle completo de un ticket.
+ * - `PATCH /admin/tickets/:ticketId/grade` — Calificación manual (WIN/LOSS/VOID/REFUND).
+ * - `PATCH /admin/tickets/:ticketId/void` — Anular un ticket confirmado.
+ */
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { AdminTicketsService } from './tickets.service.js';
 
 @Controller('admin/tickets')
@@ -34,7 +51,8 @@ export class AdminTicketsController {
   @Patch(':ticketId/grade')
   async manualGrade(
     @Param('ticketId') ticketId: string,
-    @Body() body: { outcome: 'WIN' | 'LOSS' | 'VOID' | 'REFUND'; reason: string },
+    @Body()
+    body: { outcome: 'WIN' | 'LOSS' | 'VOID' | 'REFUND'; reason: string },
     @Req() req: any,
   ) {
     await this.ticketsService.manualGrade(

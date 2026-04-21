@@ -1,13 +1,14 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Query,
-  Post,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 
+/**
+ * Controlador de tickets de apuestas del usuario.
+ *
+ * Expone endpoints para gestionar el ciclo de vida de tickets:
+ * - `GET /tickets?userId=` — Lista de tickets de un usuario.
+ * - `GET /tickets/:ticketId` — Detalle completo de un ticket.
+ * - `POST /tickets/internal/notify` — Endpoint interno para broadcast WS de actualizaciones.
+ */
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}

@@ -1,3 +1,16 @@
+/**
+ * @module AdminEventsService
+ * @description Servicio de gestión administrativa de eventos y mercados del sportsbook.
+ *
+ * Permite a los operadores:
+ * - Listar eventos con filtros por estado y liga.
+ * - Suspender/reactivar eventos completos (incluidos sus mercados).
+ * - Suspender/reactivar mercados individuales.
+ * - Ajustar manualmente las cuotas de selecciones dentro de un mercado.
+ *
+ * Todas las acciones requieren un motivo mínimo de 10 caracteres y se registran
+ * en el log de auditoría con el estado anterior y posterior de la entidad.
+ */
 import {
   BadRequestException,
   Injectable,

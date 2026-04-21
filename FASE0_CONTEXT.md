@@ -1014,3 +1014,315 @@ backend/
   apps/odds-ingestion/src/
     odds-ingestion.module.ts      ← HealthController
 ```
+
+---
+
+# Sportsbook Platform v1 — Contexto Fase 4 (Completada)
+
+## Fecha: 2026-04-16
+
+---
+
+## Objetivo de Fase 4 cumplido
+
+Expansión post-launch en 5 ejes paralelos. El sistema ahora soporta:
+
+1. **Parlays** — 2–8 selections combinadas en un ticket, odds producto, grading incremental
+2. **Mercados adicionales** — BTTS, Half Time Result, Double Chance (soccer)
+3. **Más sports** — MLB, NFL, UCL, EPL
+4. **Cashout** — cerrar un ticket CONFIRMED antes del evento (solo singles en v1)
+5. **Promotions engine** — free bets y odds boost con redemption atómica
+
+**Criterio duro cumplido:** Ningún ticket puede recibir dos pagos. Un usuario no puede redimir la misma promoción dos veces (garantizado por `@@unique([promotionId, userId])` + `$transaction`).
+
+---
+
+## Fase 4 — Lo que se hizo
+
+### 4.1 — Schema Prisma extendido
+
+**Nuevos models:**
+- `ParlayQuoteLeg` — legs de un quote PARLAY (pre-ticket), `@@unique([quoteId, selectionId])`
+- `ParlayLeg` — legs del ticket PARLAY, con `outcome` y `gradedAt` que se llenan incrementalmente, `@@unique([ticketId, selectionId])`
+- `Promotion` — tipo FREE_BET o ODDS_BOOST, ventana de validez, `maxUses`, `usedCount`
+- `PromotionRedemption` — `@@unique([promotionId, userId])` garantiza un-uso-por-usuario
+
+**Nuevos enums:**
+- `TicketType` — SINGLE | PARLAY
+- `PromotionType` — FREE_BET | ODDS_BOOST
+- `PromotionStatus` — ACTIVE | PAUSED | EXPIRED | DEPLETED
+
+**Enums extendidos:**
+- `MarketType` + ASIAN_HANDICAP, BOTH_TEAMS_TO_SCORE, HALF_TIME_RESULT, DOUBLE_CHANCE
+- `TicketStatus` + CASHED_OUT
+
+**Campos agregados:**
+- `Quote.type`, `Quote.selectionId` (ahora nullable — parlays no tienen), `Quote.promotionId`, `Quote.isFreeBet`, `Quote.freeBetAmount`
+- `Ticket.type`, `Ticket.cashedOutAt`, `Ticket.cashoutAmount`, `Ticket.promotionId`, `Ticket.isFreeBet`, `Ticket.freeBetAmount`
+- `Selection.oddsValue` ahora nullable (mercados sin odds → null → market SUSPENDED)
+
+DB sincronizada con `npx prisma db push --accept-data-loss` (Neon).
+
+### 4.2 — Eje 1: Parlays
+
+**QuoteService.requestParlayQuote()** (`apps/sportsbook-api/src/quote/quote.service.ts`):
+- Body: `{ selections: [{selectionId}], stake, userId }` — retrocompatible con SINGLE
+- Validaciones: 2–8 legs, no same-match (check por `matchId`), solo MATCH_WINNER/OVER_UNDER en v1, cada selection validada individualmente (market ACTIVE, event ACTIVE, lockTime)
+- Combined odds = producto de `oddsValue` de cada leg
+- Límites: `MAX_PARLAY_STAKE_USD` (default 200), `MAX_PARLAY_PAYOUT_USD` (default 50000)
+- Crea `Quote` con `type: PARLAY` y `parlayLegs` relacionados
+
+**BetExecutionService.submitBet()** (`apps/bet-execution/`):
+- Al crear el `Ticket`, copia los `parlayLegs` del quote al ticket (misma selectionId + oddsValue)
+- Si hay `promotionId`, ejecuta redemption en `$transaction` atómica
+
+**GradingService.gradeEvent()** (`apps/grading/src/grading/grading.service.ts`):
+- Incluye `parlayLegs` en el árbol cargado
+- Por cada selection con outcome determinado, grada singles y llama `gradeParlayLeg()` para cada leg pendiente
+- **`gradeParlayLeg()`** es idempotente: si el leg ya tiene outcome, sale sin modificar
+- LOSS en cualquier leg → `resolveParlay(LOSS)` inmediatamente (no espera las demás)
+- Todas con outcome:
+  - Si alguna LOSS → LOSS (redundante pero seguro)
+  - Si todas VOID → VOID (refund)
+  - Si todas las activas son WIN → WIN con `finalOdds` recalculadas (excluyendo VOID legs)
+  - Si no resuelve → MANUAL_REVIEW
+
+**ResultWatcherService** actualizado para incluir eventos con `parlayLegs` pendientes.
+
+**BetSlip frontend** (`front-sb/src/components/BetSlip.tsx`):
+- Toggle Single/Parlay
+- En parlay: acumula bets, `selectionId` duplicado o 8+ bloquea add
+- Validación client-side de same-match con highlight rojo antes de pedir quote
+- Muestra combined odds (producto) + potential payout
+
+### 4.3 — Eje 2: Mercados adicionales
+
+**EventCatalogService** (`apps/sportsbook-api/src/catalog/event-catalog.service.ts`):
+- Nuevo helper `upsertMarketWithSelections()` — crea mercado con sus selections; status SUSPENDED si alguna selection tiene `oddsValue: null`
+- En `syncEventFromMatch()`: para matches de soccer crea BOTH_TEAMS_TO_SCORE (yes/no), HALF_TIME_RESULT (home/draw/away), DOUBLE_CHANCE (1X/X2/12), todos con odds null inicialmente
+- **No sobrescribe** odds ya cargadas por admin — solo crea las selections que faltan
+
+**GradingService.determineOutcome()** extendido:
+- `BOTH_TEAMS_TO_SCORE` — `homeScore > 0 && awayScore > 0`
+- `DOUBLE_CHANCE` — `1X/X2/12` mapea a (homeWin || draw), (awayWin || draw), (homeWin || awayWin)
+- `HALF_TIME_RESULT` — usa `result.homeLinescores[0]` y `awayLinescores[0]` del primer período; si falta linescore → MANUAL_REVIEW
+- `OfficialResult` interface extendido con `homeLinescores` y `awayLinescores`
+
+**Admin: carga manual de odds:**
+- `PATCH /admin/markets/:marketId/odds` — body `{ legs: [{selectionId, oddsValue}], reason }`
+- `AdminEventsService.setMarketOdds()` valida odds > 1, actualiza selections; si todas las selections tienen odds y el market estaba SUSPENDED → lo reactiva automáticamente
+- AuditLog con before/after de selections
+
+### 4.4 — Eje 3: Más sports
+
+**SportsService** (`apps/sportsbook-api/src/sports/sports.service.ts`):
+- Nuevos crons `EVERY_MINUTE`: `handleMlbSync`, `handleNflSync`, `handleUclSync`, `handlePremierLeagueSync`
+- Nuevos crons `EVERY_12_HOURS`: `handleMlbStandingsSync`, `handleUclStandingsSync`, `handleEplStandingsSync`
+- Ligas ESPN: `baseball/mlb`, `football/nfl`, `soccer/uefa.champions`, `soccer/eng.1`
+- DB leagues: `MLB`, `NFL`, `UCL`, `EPL`
+
+**GradingService.buildEspnPath()** actualizado con el mismo mapeo para resolver partidos terminados.
+
+**Layout frontend** (`front-sb/src/components/Layout.tsx`):
+- Selector de sport ahora incluye UCL, EPL, MLB, NFL con sus íconos
+
+### 4.5 — Eje 4: Cashout
+
+**CashoutService** (`apps/sportsbook-api/src/cashout/`):
+- `GET /tickets/:ticketId/cashout-quote?userId=` — retorna `{cashoutAmount, currentOdds, oddsAtBet, expiresAt}` con TTL 10s
+- `POST /tickets/:ticketId/cashout` body `{userId, expectedAmount}` — ejecuta
+- **Fórmula**: `stake * (oddsAtQuote / currentOdds) * (1 - CASHOUT_MARGIN)` — cap a 90% del stake como seguridad
+- **Drift check**: si `|actual - expected| / expected > 2%` → error `CASHOUT_AMOUNT_CHANGED` con nuevo monto
+- Crea `GradingRecord` con `outcome: REFUND`, `resultSource: CASHOUT`, `gradedBy: user`
+- Crea `SettlementJob` con `idempotencyKey = sha256("cashout:" + ticketId + ":" + amount.toFixed(6))` — va por el pipeline normal de settlement
+- Ticket pasa a status `CASHED_OUT` + `cashedOutAt` + `cashoutAmount`
+
+**Bloqueos (v1):**
+- Solo tickets SINGLE en status CONFIRMED
+- Evento antes del `lockTime`
+- No disponible para parlays (recálculo demasiado complejo)
+
+**Frontend:**
+- `CashoutModal.tsx` — fetch cashout-quote al abrir, countdown visual de 10s, recompara al confirmar
+- Si servidor responde `CASHOUT_AMOUNT_CHANGED`, actualiza monto y reinicia countdown
+- Botón "Cash Out" en `MyBets.tsx` solo para tickets elegibles (CONFIRMED + SINGLE + event not started)
+
+### 4.6 — Eje 5: Promotions Engine
+
+**PromotionService** (`apps/sportsbook-api/src/promotions/`):
+- `applyPromotion({promotionId, userId, selectionId, stake})`:
+  - Valida status ACTIVE, window, no-previous-redemption, maxUses
+  - Respeta feature flag `PROMOTIONS_ENABLED` (default true)
+  - FREE_BET → `adjustedStake = stake - min(freeBetAmount, stake)`, retorna `isFreeBet: true` + `freeBetAmount`
+  - ODDS_BOOST → valida que coincide `selectionId`, retorna `boostedOdds` para reemplazar odds
+- `redeemPromotion()` — `$transaction` atómica: create redemption + increment usedCount
+
+**QuoteService integración:**
+- Si request incluye `promotionId` → llama `applyPromotion()` antes de crear quote
+- Quote persiste `promotionId`, `isFreeBet`, `freeBetAmount` y si hay boost usa la `boostedOdds` como `oddsAtQuote`
+- `txParams.value` usa el `adjustedStake` (el wallet paga menos en free bet)
+
+**Redemption en BetExecution:**
+- Al crear ticket, si `quote.promotionId` → `$transaction` crea `PromotionRedemption` + `usedCount++`
+- Manejo de error defensivo (warn si `P2002` race)
+
+**Grading/Settlement free bet:**
+- `GradingService.computeSinglePayout()` — si `quote.isFreeBet && quote.freeBetAmount` → `payout = max(0, expectedPayout - freeBetAmount)` (solo ganancias netas)
+
+**Admin API** (`apps/admin/src/promotions/`):
+- `GET /admin/promotions?status=` — lista ordenada por createdAt
+- `GET /admin/promotions/:id/redemptions` — ver quién reclamó
+- `POST /admin/promotions` — crea nueva (valida tipo-específicos)
+- `PATCH /admin/promotions/:id/pause` | `/activate` — con AuditLog
+- Todos los mutation endpoints escriben AuditLog
+
+**Frontend admin:**
+- Nueva página `front-admin/src/pages/PromotionsPage.tsx` — tabla con stats de uso (N/maxUses), formulario create, botones pause/activate
+- Sidebar con nueva entrada "Promotions" (ícono Gift)
+
+---
+
+## Variables de entorno nuevas (backend/.env)
+
+```
+# Parlays
+MAX_PARLAY_STAKE_USD=200
+MAX_PARLAY_PAYOUT_USD=50000
+
+# Cashout
+CASHOUT_MARGIN=0.05                # 5% margen operador
+
+# Promotions
+PROMOTIONS_ENABLED=true            # feature flag
+```
+
+---
+
+## Dependencias nuevas instaladas
+
+Ninguna — Fase 4 usa el stack existente.
+
+---
+
+## Migración a la DB
+
+Se aplicó con `npx prisma db push --accept-data-loss` (Neon). Sin migrations.sql versionados; schema y DB quedan en sync.
+
+---
+
+## Arquitectura de comunicación (actualizada)
+
+```
+sportsbook-api (3000)
+  ├─ POST /quotes → QuoteService (SINGLE o PARLAY, con/sin promotionId)
+  ├─ GET /tickets/:id/cashout-quote → CashoutService
+  ├─ POST /tickets/:id/cashout → CashoutService
+  └─ (sin cambios en internos)
+
+admin (3005)
+  ├─ PATCH /admin/markets/:id/odds → AdminEventsService.setMarketOdds()
+  ├─ GET/POST /admin/promotions
+  ├─ PATCH /admin/promotions/:id/pause | /activate
+  └─ GET /admin/promotions/:id/redemptions
+
+grading (3003)
+  ├─ gradeEvent() → gradeParlayLeg() (incremental) + resolveParlay()
+  └─ determineOutcome() soporta BTTS, DOUBLE_CHANCE, HALF_TIME_RESULT
+```
+
+---
+
+## Estructura de archivos nuevos creados en Fase 4
+
+```
+backend/
+  apps/sportsbook-api/src/
+    promotions/
+      promotion.service.ts
+      promotion.module.ts
+    cashout/
+      cashout.service.ts
+      cashout.controller.ts
+      cashout.module.ts
+  apps/admin/src/
+    promotions/
+      promotions.service.ts
+      promotions.controller.ts
+      promotions.module.ts
+
+front-sb/src/
+  components/
+    CashoutModal.tsx
+
+front-admin/src/
+  pages/
+    PromotionsPage.tsx
+```
+
+---
+
+## Archivos modificados en Fase 4
+
+```
+backend/
+  prisma/schema.prisma            ← 4 models nuevos, 3 enums nuevos, campos en Quote/Ticket/Selection
+  .env + .env.example             ← vars Fase 4
+  apps/sportsbook-api/src/
+    app.module.ts                 ← PromotionModule, CashoutModule
+    quote/quote.service.ts        ← requestParlayQuote() + integración promotions
+    quote/quote.module.ts         ← imports PromotionModule
+    quote/dto/request-quote.dto.ts ← selections[], promotionId, legs response
+    catalog/event-catalog.service.ts ← upsertMarketWithSelections() + BTTS/HTR/DC
+    sports/sports.service.ts      ← crons MLB/NFL/UCL/EPL + standings
+  apps/grading/src/
+    grading/grading.service.ts    ← gradeParlayLeg + resolveParlay + BTTS/DC/HTR + buildEspnPath extendido
+    result/result-watcher.service.ts ← incluye parlayLegs en query
+  apps/bet-execution/src/
+    execution/bet-execution.service.ts ← copia parlayLegs + redeem promotion
+  apps/admin/src/
+    admin.module.ts               ← AdminPromotionsModule
+    events/events.service.ts      ← setMarketOdds()
+    events/events.controller.ts   ← PATCH /markets/:id/odds
+
+front-sb/src/
+  store/useStore.ts               ← betSlipMode, setBetSlipMode, parlay QuoteResponse
+  components/BetSlip.tsx          ← toggle Single/Parlay, validación same-match
+  components/MyBets.tsx           ← badge CASHED_OUT, botón Cash Out, CashoutModal
+  components/Layout.tsx           ← UCL, EPL, MLB, NFL en selector
+
+front-admin/src/
+  App.tsx                         ← ruta 'promotions'
+  components/Sidebar.tsx          ← entrada Promotions (Gift)
+  api/admin.api.ts                ← setMarketOdds + promotions CRUD
+```
+
+---
+
+## Decisiones de diseño tomadas en Fase 4
+
+| Decisión | Valor |
+|----------|-------|
+| Parlays same-match | Prohibido en v1 (no same-game parlays) |
+| Cashout parlay | No disponible en v1 — demasiado complejo el recálculo |
+| Cashout cap | 90% del stake + cap formulaico con CASHOUT_MARGIN 5% |
+| Cashout drift tolerance | 2% entre quote y execute → `CASHOUT_AMOUNT_CHANGED` |
+| Mercados sin odds | `oddsValue: null` + market SUSPENDED, nunca `oddsValue: 0` |
+| Admin carga odds | `setMarketOdds()` reactiva el market si todas tienen odds |
+| Grading parlay | Incremental + idempotente; LOSS corto-circuita; VOID excluye del producto |
+| Redemption promotion | `@@unique([promotionId, userId])` + `$transaction` atómica |
+| Promotion feature flag | `PROMOTIONS_ENABLED=true/false` en env — rollout gradual |
+| Free bet payout | WIN paga `expectedPayout - freeBetAmount` (solo ganancias netas) |
+| Odds boost | Reemplaza `oddsAtQuote` en el Quote; valida que coincide `selectionId` |
+| Blockchain | Sigue en mock — `CHAIN_RPC_URL=mock` |
+
+---
+
+## Lo que NO se hizo (out-of-scope v1 según el brief)
+
+- Same-game parlays (correlación de resultados)
+- Cashout parcial
+- Live betting (requiere arquitectura de latencia diferente)
+- Blockchain real (pendiente de auditoría de contrato)
+- Referral programs / cashback
+- Odds dinámicas por volumen (requiere risk management engine)
+

@@ -1,3 +1,11 @@
+/**
+ * @module SettlementWatcherService
+ * @description Servicio que monitorea trabajos de liquidación pendientes o fallidos.
+ *
+ * Se ejecuta cada 15 segundos, buscando hasta 50 SettlementJobs en estado PENDING o FAILED
+ * con intentos por debajo del máximo permitido. Los encola como jobs de BullMQ
+ * con IDs idempotentes para evitar procesamiento duplicado.
+ */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -15,9 +23,7 @@ export class SettlementWatcherService {
 
   @Cron('*/15 * * * * *')
   async enqueuePendingSettlements(): Promise<void> {
-    const MAX_ATTEMPTS = parseInt(
-      process.env.MAX_SETTLEMENT_ATTEMPTS || '5',
-    );
+    const MAX_ATTEMPTS = parseInt(process.env.MAX_SETTLEMENT_ATTEMPTS || '5');
 
     const pendingJobs = await this.prisma.settlementJob.findMany({
       where: {
